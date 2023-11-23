@@ -30,7 +30,7 @@ const AllRoutes = () => {
     <Router>
       <div className="App flex flex-col min-h-screen">
         <Header />
-        <div className="mb-20"></div>
+        <div className=""></div>
         <main className="flex-grow">
           
           <Routes>
