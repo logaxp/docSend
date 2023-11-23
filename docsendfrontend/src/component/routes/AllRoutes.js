@@ -22,6 +22,8 @@ import CreateCustomer from '../pages/insurance/CreateCustomer';
 import ListCustomer from '../pages/insurance/ListCustomer';
 import ListAgents from '../pages/insurance/ListAgents';
 import CreateAgentForm from '../pages/insurance/CreateAgentForm';
+import DefaultTemplate from '../pages/insurance/DefaultTemplate';
+import Profile from '../pages/insurance/Profile';
 
 
 
@@ -38,6 +40,7 @@ const AllRoutes = () => {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/insurance" element={<Insurance />} />
+            <Route path="/default_templates" element={<DefaultTemplate />} />
 
              {/* // Imsurance Component */}
              <Route path="templates" element={<InsuranceLayout> <Template /> </InsuranceLayout> } />
@@ -55,6 +58,7 @@ const AllRoutes = () => {
                 <Route path="/list-customer" element={<InsuranceLayout> <ListCustomer /> </InsuranceLayout>} />
                 <Route path="/create-agents" element={<InsuranceLayout> <CreateAgentForm /> </InsuranceLayout>} />
                 <Route path="/list-agents" element={<InsuranceLayout> <ListAgents /> </InsuranceLayout>} />
+                <Route path="/profile" element={<InsuranceLayout> <Profile /> </InsuranceLayout>} />
 
           </Routes>
         </main>
