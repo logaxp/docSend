@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@200&family=Lora:ital@1&family=Poiret+One&family=Poppins:ital,wght@1,100;1,200&family=Signika+Negative&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@200&family=Farsan&family=Lora:ital@1&family=Poiret+One&family=Poppins:ital,wght@1,100;1,200&family=Signika+Negative&display=swap');
+
+h3{
+    font-family: 'Barlow Condensed', sans-serif;
+font-family: 'Lora', serif;
+font-family: 'Poiret One', sans-serif;
+font-family: 'Poppins', sans-serif;
+font-family: 'Signika Negative', sans-serif;
+}
+
+p{
+    font-family: 'Barlow Condensed', sans-serif;
+    font-family: 'Farsan', cursive;
+    font-family: 'Lora', serif;
+    font-family: 'Poiret One', sans-serif;
+    font-family: 'Poppins', sans-serif;
+    font-family: 'Signika Negative', sans-serif;
+    align-items: left !important;   
+}
