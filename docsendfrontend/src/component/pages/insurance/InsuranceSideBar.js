@@ -1,21 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faTachometerAlt, // Dashboard icon
-  faUserFriends, // Customers icon
-  faCopy, // Templates icon
-  faUserTie, // Team icon
-  faPaperPlane, // Send AOR icon
-  faMoneyBillWave, // Buy Credits icon
-  faCog, // Settings icon
-  faUser, // User icon
-  faUserGroup, // Groups icon
+  faTachometerAlt,
+  faUserFriends,
+  faCopy,
+  faUserTie,
+  faPaperPlane,
+  faMoneyBillWave,
+  faCog,
+  faUser,
+  faUserGroup,
+  faBars,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 
 const InsuranceSideBar = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
+
   return (
-    <aside className="w-64" aria-label="Sidebar">
+    <>
+      <div className={`fixed inset-0 z-20 transition-opacity bg-black opacity-50 lg:hidden ${isSidebarOpen ? 'block' : 'hidden'}`} onClick={closeSidebar}></div>
+      <div className={`fixed inset-y-0 left-0 z-30 w-64 overflow-y-auto transition duration-300 transform bg-gray-50 rounded dark:bg-gray-800 lg:translate-x-0 lg:static lg:inset-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        {/* Sidebar content */}
+        <aside aria-label="Sidebar" className="py-4 px-3 min-h-screen">
       <div className="overflow-y-auto py-4 px-3 min-h-screen bg-gray-50 rounded dark:bg-gray-800">
         <div className="mb-8">
           <div className="flex items-center justify-center">
@@ -85,7 +101,13 @@ const InsuranceSideBar = () => {
         </Link>
         </ul>
       </div>
-    </aside>
+      <FontAwesomeIcon icon={faTimes} className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 lg:hidden" onClick={toggleSidebar} />
+        </aside>
+    </div>
+      <div className="text-gray-500 hover:text-gray-600 lg:hidden" onClick={toggleSidebar}>
+        <FontAwesomeIcon icon={faBars} className="w-6 h-6" />
+      </div>
+    </>
   );
 };
 
