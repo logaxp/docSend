@@ -7,6 +7,9 @@ const SendForm = () => {
   const [sendMethod, setSendMethod] = useState('email');
   const [sendTime, setSendTime] = useState('now');
   const [otherAgent, setOtherAgent] = useState('no');
+  const [permissionType, setPermissionType] = useState('general');
+  const [encryptionEnabled, setEncryptionEnabled] = useState(false);
+  const [sensitiveDataHandling, setSensitiveDataHandling] = useState(false);
 
   // Dummy data for customers and templates dropdowns
   const customers = ['John Doe', 'Jane Smith', 'Other'];
@@ -48,116 +51,114 @@ const SendForm = () => {
           ))}
         </select>
       </div>
-      <div className="mb-4">
-  <div className="flex justify-center items-center">
-    <div className="mr-10">
-      <label className="block">Select Method to Send:</label>
-    </div>
-    <div className="flex">
-      <div className="flex items-center mr-10">
-        <input
-          type="radio"
-          name="sendMethod"
-          value="email"
-          checked={sendMethod === 'email'}
-          onChange={() => setSendMethod('email')}
-          className="form-radio mr-2"
-        />
-        <label>E-Mail</label>
-      </div>
-      <div className="flex items-center mr-10">
-        <input
-          type="radio"
-          name="sendMethod"
-          value="sms"
-          checked={sendMethod === 'sms'}
-          onChange={() => setSendMethod('sms')}
-          className="form-radio mr-2"
-        />
-        <label>SMS</label>
-      </div>
-      <div className="flex items-center">
-        <input
-          type="radio"
-          name="sendMethod"
-          value="both"
-          checked={sendMethod === 'both'}
-          onChange={() => setSendMethod('both')}
-          className="form-radio mr-2"
-        />
-        <label>Both</label>
-      </div>
-    </div>
-  </div>
-</div>
-<div className="mb-4">
-  <div className="flex justify-center items-center">
-    <div className="mr-10">
-      <label className="block">Choose Document Send Time?</label>
-    </div>
-    <div className="flex">
-      <div className="flex items-center mr-10">
-        <input
-          type="radio"
-          name="sendTime"
-          value="now"
-          checked={sendTime === 'now'}
-          onChange={() => setSendTime('now')}
-          className="form-radio mr-2"
-        />
-        <label>Now</label>
-      </div>
-      <div className="flex items-center">
-        <input
-          type="radio"
-          name="sendTime"
-          value="later"
-          checked={sendTime === 'later'}
-          onChange={() => setSendTime('later')}
-          className="form-radio mr-2"
-        />
-        <label>Later</label>
-      </div>
-    </div>
-  </div>
-</div>
+   
+<div className="container mx-auto p-6">
+      <h2 className="text-xl font-bold mb-4">Document Send Settings</h2>
+      <form className="space-y-4">
 
-<div className="mb-12">
-  <div className="flex justify-center items-center">
-    <div className="mr-10">
-      <label className="block">Include Another Agent?</label>
-    </div>
-    <div className="flex">
-      <div className="flex items-center mr-10">
-        <input
-          type="radio"
-          name="otherAgent"
-          value="yes"
-          checked={otherAgent === 'yes'}
-          onChange={() => setOtherAgent('yes')}
-          className="form-radio mr-2"
-        />
-        <label>Yes</label>
-      </div>
+        {/* Send Method */}
+        <div className="flex items-center">
+          <label className="w-40 font-semibold">Select Method:</label>
+          <div className="flex space-x-4">
+            <label className="flex items-center space-x-2">
+              <input type="radio" name="sendMethod" value="email" checked={sendMethod === 'email'} onChange={() => setSendMethod('email')} />
+              <span>E-Mail</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="radio" name="sendMethod" value="sms" checked={sendMethod === 'sms'} onChange={() => setSendMethod('sms')} />
+              <span>SMS</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="radio" name="sendMethod" value="both" checked={sendMethod === 'both'} onChange={() => setSendMethod('both')} />
+              <span>Both</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Send Time */}
+        <div className="flex items-center">
+          <label className="w-40 font-semibold">Doc Send Time:</label>
+          <div className="flex space-x-4">
+            <label className="flex items-center space-x-2">
+              <input type="radio" name="sendTime" value="now" checked={sendTime === 'now'} onChange={() => setSendTime('now')} />
+              <span>Now</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="radio" name="sendTime" value="later" checked={sendTime === 'later'} onChange={() => setSendTime('later')} />
+              <span>Later</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Include Another Agent */}
+        <div className="flex items-center">
+          <label className="w-40 font-semibold">Include  Agent?</label>
+          <div className="flex space-x-4">
+            <label className="flex items-center space-x-2">
+              <input type="radio" name="otherAgent" value="yes" checked={otherAgent === 'yes'} onChange={() => setOtherAgent('yes')} />
+              <span>Yes</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="radio" name="otherAgent" value="no" checked={otherAgent === 'no'} onChange={() => setOtherAgent('no')} />
+              <span>No</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Document Permission Options */}
+        <div className="flex items-center">
+          <label className="w-40 font-semibold">Permission Type</label>
+          <div className="flex space-x-4">
+            <label className="flex items-center space-x-2">
+              <input type="radio" name="permissionType" value="general" checked={permissionType === 'general'} onChange={() => setPermissionType('general')} />
+              <span>General</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="radio" name="permissionType" value="sensitive" checked={permissionType === 'sensitive'} onChange={() => setPermissionType('sensitive')} />
+              <span>Sensitive</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input type="radio" name="permissionType" value="encrypted" checked={permissionType === 'encrypted'} onChange={() => setPermissionType('encrypted')} />
+              <span>Encrypted</span>
+            </label>
+          </div>
+        </div>
+
+       {/* Advanced Security Settings */}
       <div className="flex items-center">
-        <input
-          type="radio"
-          name="otherAgent"
-          value="no"
-          checked={otherAgent === 'no'}
-          onChange={() => setOtherAgent('no')}
-          className="form-radio mr-2"
-        />
-        <label>No</label>
+        <label className="w-40 font-semibold">Advanced Security</label>
+        <div className="flex space-x-4">
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={encryptionEnabled}
+              onChange={() => setEncryptionEnabled(!encryptionEnabled)}
+              className="form-checkbox"
+            />
+            <span>Enable Advanced Encryption</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={sensitiveDataHandling}
+              onChange={() => setSensitiveDataHandling(!sensitiveDataHandling)}
+              className="form-checkbox"
+            />
+            <span>Handle as Sensitive Data</span>
+          </label>
+        </div>
       </div>
+
+
+        {/* Submit Button */}
+        <div className="flex justify-center">
+          <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
+            Send Document
+          </button>
+        </div>
+
+      </form>
     </div>
-  </div>
-</div>
-      <div className="flex justify-center mt-6">
-        <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
-          Send
-        </button>
-      </div>
     </div>
   );
 };

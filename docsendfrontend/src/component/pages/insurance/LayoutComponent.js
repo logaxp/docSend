@@ -24,7 +24,7 @@ const LayoutComponent = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-50 opacity-70 rounded-xl mt-10  mx-auto">
     
       <div className="flex-1 p-5">
 

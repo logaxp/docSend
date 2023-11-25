@@ -65,9 +65,9 @@ const DefaultTemplate = () => {
          className="border-2 border-gray-200 rounded-lg p-2 w-full"
        />
      </div>
-     <div className="grid grid-cols-1 mb-40 md:grid-cols-2 lg:grid-cols-3 gap-4">
+     <div className="grid grid-cols-1 mb-40 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
        {visibleTemplates.map((template) => (
-         <div key={template.id} className="border rounded-lg p-4">
+         <div key={template.id} className="border rounded-lg p-4 bg-white">
            <h3 className="text-lg font-semibold">{template.name}</h3>
            <p className="text-gray-600">{template.description}</p>
            <button

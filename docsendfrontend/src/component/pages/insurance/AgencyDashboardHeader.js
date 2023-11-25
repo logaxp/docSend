@@ -5,7 +5,7 @@ import { faUsers, faUserTie, faUserPlus, faListAlt } from '@fortawesome/free-sol
 
 const AgencyDashboardHeader = () => {
   return (
-    <div className="bg-white shadow mb-20  mx-auto">
+    <div className="bg-gray-700 opacity-50 shadow mb-20  mx-auto">
       <div className="mx-auto py-4 px-6 sm:px-8 lg:flex justify-between items-center">
        
         
@@ -44,7 +44,7 @@ const AgencyDashboardHeader = () => {
           </div>
         </div>
         <div className="flex items-center space-10">
-            <h1 className="text-2xl font-bold ">Agency Dashboard</h1>
+            <h1 className="text-2xl font-bold text-white">Agency Dashboard</h1>
         </div>
       </div>
     </div>

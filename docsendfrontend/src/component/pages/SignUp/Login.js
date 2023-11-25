@@ -10,6 +10,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import IsLoading from '../../pages/Loading/Hooks/IsLoading';
 import { Link } from 'react-router-dom';
 
+
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -26,9 +27,15 @@ const Login = () => {
     try {
       // Simulate login process
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      toast.success('Login successful!');
-      // Navigate to the /insurance route
-      navigate('/insurance');
+  
+      // Check if the user is an admin
+      if (values.email === 'admin@gmail.com' && values.password === 'Admin@123') {
+        toast.success('Admin Login successful!');
+        navigate('/admin_dashboard');
+      } else {
+        toast.success('Login successful!');
+        navigate('/insurance');
+      }
     } catch (error) {
       toast.error('Login failed. Please try again.');
     } finally {
@@ -36,6 +43,7 @@ const Login = () => {
       setSubmitting(false);
     }
   };
+  
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -52,7 +60,7 @@ const Login = () => {
         {({ values, isSubmitting }) => (
           <Form className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
             <div className="w-full max-w-lg p-8 bg-white rounded-lg shadow-md">
-              <h1 className="text-2xl mb-8 font-bold text-gray-800 mb-6">Login</h1>
+              <h1 className="text-2xl mb-8 font-bold text-gray-800">Login</h1>
               
               <div className="mb-8">
                 <Field name="email" type="email" placeholder="Email Address" className="w-full p-3 border rounded focus:outline-none focus:border-blue-500" />

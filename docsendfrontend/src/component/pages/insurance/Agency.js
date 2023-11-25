@@ -37,9 +37,10 @@ const Agency = () => {
     <div className="container mx-auto p-8">
         
       < AgencyDashboardHeader />
-      
+      <div className="container mx-auto p-8 bg-gray-300 opacity-70 rounded-xl">
+        
       {/* Jobs Section */}
-      <section className="mb-6 max-w-5xl text-center mx-auto">
+      <section className="mb-6 max-w-5xl text-center mx-auto ">
         <h3 className="text-2xl font-semibold mb-4">Job Openings</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {jobs.map((job) => (
@@ -125,6 +126,7 @@ const Agency = () => {
     </table>
   </div>
 </section>
+</div>
     </div>
   );
 };

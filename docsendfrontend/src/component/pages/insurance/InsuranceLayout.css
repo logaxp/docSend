@@ -1,0 +1,12 @@
+.body-bg {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+  
+  .body-bg {
+    min-height: 100vh;
+    /* ... other styles ... */
+  }
+      

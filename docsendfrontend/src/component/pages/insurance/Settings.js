@@ -147,21 +147,7 @@ const Settings = () => {
         <div className="mb-4">
           {/* Image and subscription details */}
           <div className="flex justify-between items-center">
-          <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md">
-            <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-800">Your Subscription</h3>
-                <p className="text-gray-600">Plan: <span className="font-bold text-gray-800">Pro Plan</span></p>
-                <p className="text-gray-600">Duration: <span className="font-bold text-gray-800">10/16/23 to 11/16/23</span></p>
-            </div>
-            <div className="flex items-center justify-end">
-                <button 
-                className="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                onClick={() => alert('Cancel Subscription')}
-                >
-                Cancel Subscription
-                </button>
-            </div>
-            </div>
+         
           <img src={Logo} alt="Company Logo" className="h-20 w-20" />
           </div>
         </div>

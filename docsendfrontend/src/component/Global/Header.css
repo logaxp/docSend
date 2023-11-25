@@ -1,4 +1,9 @@
 
+
+.slide-container{
+  height : 80vh;
+  
+}
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@200&family=Lora:ital@1&family=Poiret+One&family=Signika+Negative&display=swap');
 .logo{
     font-family: 'Barlow Condensed', sans-serif;
@@ -8,7 +13,7 @@
 }
 /* Styles for the first card */
 .card-0 {
-    bottom: 0.1%;
+    bottom: 0%;
     left: 0.5%;
     max-width: 500px;
     padding: 1.5rem;
@@ -20,8 +25,8 @@
 
 /* Styles for the second card */
 .card-1 {
-    bottom: 2%;
-    right: 1%;
+    bottom: 0%;
+    right: 0%;
     max-width: 500px;
     background-color: rgba(0, 0, 0, 0.85); /* Darker background for a sleek look */
     padding: 2rem;
@@ -42,11 +47,6 @@
     text-align: left;;
 
 }
-/* Responsive images */
-.card-container img {
-    max-width: 100%;
-    height: 100%;
-}
 
 /* Media queries for tablet */
 @media (max-width: 768px) {
@@ -55,7 +55,7 @@
     }
 
     .card-0, .card-1, .card-2 {
-        bottom: 10%; /* Provide more space at the bottom for smaller devices */
+        bottom: 0%; /* Provide more space at the bottom for smaller devices */
         left: 50%;
         transform: translateX(-50%);
         max-width: 90%; /* Allow some margin on the sides */
@@ -81,7 +81,7 @@
 .custom-arrow {
     z-index: 50;
     position: absolute;
-    top: 50%;
+    top: 14%;
     transform: translateY(-50%);
     background: transparent;
     border: none;
@@ -100,7 +100,7 @@
 
 /* Custom class for the header text 80% from the top and centered */
 .header-text {
-    top: 20%;
+    top: 1%;
     left: 50%;
     transform: translate(-50%, -50%);
     color:rgba(255, 255, 255, 0.85);
@@ -111,6 +111,75 @@
     font-family: 'Signika Negative', sans-serif;
     /* Add other styling here */
   }
-  
-  /* Add more custom classes for other unique styles if needed */
-  
+.search {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color:rgba(245, 11, 11, 0.85);
+    position: absolute;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-family: 'Lora', serif;
+    font-family: 'Poiret One', sans-serif;
+    font-family: 'Signika Negative', sans-serif;
+    /* Add other styling here */
+  }
+  .search-bar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color:rgba(255, 255, 255, 0.85);
+    position: absolute;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-family: 'Lora', serif;
+    font-family: 'Poiret One', sans-serif;
+    font-family: 'Signika Negative', sans-serif;
+    /* Add other styling here */
+  }
+  .search-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color:rgba(255, 255, 255, 0.85);
+    position: absolute;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-family: 'Lora', serif;
+    font-family: 'Poiret One', sans-serif;
+    font-family: 'Signika Negative', sans-serif;
+    /* Add other styling here */
+  }
+  .search-button:hover {
+    background-color: #333;
+    color: white;
+  }
+  .search-bar:hover {
+    background-color: #333;
+    color: white;
+  }
+  .search:hover {
+    background-color: #333;
+    color: white;
+  }
+  .search-bar:focus {
+    background-color: #333;
+    color: rgb(220, 6, 6);
+  }
+  .search:focus {
+    background-color: #333;
+    color: white;
+  }
+  .search-button:focus {
+    background-color: #333;
+    color: white;
+  }
+  .search-bar:active {
+    background-color: #333;
+    color: white;
+  }
+  .search:active {
+    background-color: #333;
+    color: white;
+  }
+ 
