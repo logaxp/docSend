@@ -1,7 +1,7 @@
 
 import './App.css';
 import { ToastContainer } from 'react-toastify';
-import backgroundImage from './assets/images/bg-image.png';
+import backgroundImage from './assets/images/bg-image1.png';
 import AllRoutes from './component/routes/AllRoutes';
 
 

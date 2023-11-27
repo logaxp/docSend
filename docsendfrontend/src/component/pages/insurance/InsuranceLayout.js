@@ -1,6 +1,6 @@
 import React from 'react';
 import InsuranceSideBar from './InsuranceSideBar';
-import backgroundImage from '../../../assets/images/bg-image.png';
+import backgroundImage from '../../../assets/images/bg-image1.png';
 import './InsuranceLayout.css';
 
 const InsuranceLayout = ({ children }) => {

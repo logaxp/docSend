@@ -58,7 +58,7 @@ const Login = () => {
         onSubmit={handleSubmit}
       >
         {({ values, isSubmitting }) => (
-          <Form className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+          <Form className="flex flex-col items-center justify-center min-h-screen ">
             <div className="w-full max-w-lg p-8 bg-white rounded-lg shadow-md">
               <h1 className="text-2xl mb-8 font-bold text-gray-800">Login</h1>
               

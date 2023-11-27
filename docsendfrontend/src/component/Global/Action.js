@@ -4,9 +4,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import {  useLocation } from 'react-router-dom';
 // Import the additional images for the slider
-import slideImage1 from '../../assets/images/pod.png';
+import slideImage1 from '../../assets/images/pod8.png';
 import slideImage2 from '../../assets/images/pod5.png';
-import slideImage3 from '../../assets/images/pod8.png';
+import slideImage3 from '../../assets/images/pod.png';
 
 import cardImage2 from '../../assets/images/pen2.png';
 
@@ -61,12 +61,13 @@ function NextArrow(props) {
             },
             {
                 backgroundImage: slideImage1,
-                headText: "Sign Anywhere with DoSend ",
-                headTextStyle: "top-80 center-50",
+               
             },
             {
                 backgroundImage: slideImage3,
                 cardImage: cardImage2,
+                headText: "Sign Anywhere with DoSend ",
+                headTextStyle: "top-80 center-50",
             },
         ];
         const isHomePage = location.pathname === '/';

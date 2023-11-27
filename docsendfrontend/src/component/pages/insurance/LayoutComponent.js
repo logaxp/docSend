@@ -24,7 +24,7 @@ const LayoutComponent = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 opacity-70 rounded-xl mt-10  mx-auto">
+    <div className="flex h-135 bg-gray-50 rounded-xl mt-10  mx-auto mb-20">
     
       <div className="flex-1 p-5">
 
@@ -41,10 +41,10 @@ const LayoutComponent = () => {
    Doc Analytics
   </h3>
         {/* Pie Chart */}
-        <div className="mb-5">
+        <div className="mb-20">
       
 
-          <div className="h-64">
+          <div className="h-64 ">
             <PieChart />
           </div>
         </div>

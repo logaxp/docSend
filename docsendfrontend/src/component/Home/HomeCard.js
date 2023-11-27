@@ -81,7 +81,7 @@ const HomeCard = () => {
 
     return (
         <>
-         <h1 className="text-4xl  font-bold text-center mb-10">Who we are</h1>
+         <h1 className="text-4xl text-white bg-gray-900 w-64 rounded-xl mx-auto font-extrabold text-center mb-10">Who we are</h1>
          <hr className="w-1/4 mx-auto mb-4  border-t-2 border-red-500" />
         <div className="flex  mb-20 border-l-4 justify-center items-center flex-wrap">
             {cardData.map(card => (

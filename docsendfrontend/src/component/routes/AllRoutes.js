@@ -34,6 +34,11 @@ import  AdminDataManagement from '../pages/insurance/Admin/AdminDataManagement.j
 import AdminSettings from '../pages/insurance/Admin/AdminSettings.js';
 import AdminTools from '../pages/insurance/Admin/AdminTools.js'
 import AdminSecurity from '../pages/insurance/Admin/AdminSecurity.js';
+import Signup from '../pages/SignUp/SignUp.js';
+import ContactUs from '../pages/SignUp/ContactUs.js';
+import Pricing from '../pages/SignUp/Pricing.js';
+import Resources from '../pages/SignUp/Resources.js';
+import Products from '../pages/SignUp/Products.js';
 
 
 
@@ -49,9 +54,16 @@ const AllRoutes = () => {
             
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
+            <Route path='/contact' element={<ContactUs />} />
+            <Route path='/pricing' element={<Pricing />} />
+            <Route path='/resources' element={<Resources />} />
+            <Route path='/products' element={<Products />} />
+
+
             <Route path="/insurance" element={<Insurance />} />
             <Route path="/default_templates" element={<DefaultTemplate />} />
-            <Route path="/admin_dashboard" element={<AdminDashboard />} />
+            
 
              {/* // Imsurance Component */}
              <Route path="templates" element={<InsuranceLayout> <Template /> </InsuranceLayout> } />
@@ -71,7 +83,7 @@ const AllRoutes = () => {
                 <Route path="/list-agents" element={<InsuranceLayout> <ListAgents /> </InsuranceLayout>} />
                 <Route path="/profile" element={<InsuranceLayout> <Profile /> </InsuranceLayout>} />
 
-              
+                <Route path="/admin_dashboard" element={<AdminDashboardLayout> <AdminDashboard /> </AdminDashboardLayout>} />
                 <Route path="/dashboard_content" element={<AdminDashboardLayout> <DashboardContent /> </AdminDashboardLayout>} />
                 <Route path="/user_management" element={<AdminDashboardLayout> <UserManagement /> </AdminDashboardLayout>} />
                 <Route path="/admin/documents" element={<AdminDashboardLayout> <AdminDocuments /> </AdminDashboardLayout>} />

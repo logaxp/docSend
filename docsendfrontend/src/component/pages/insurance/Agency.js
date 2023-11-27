@@ -37,7 +37,7 @@ const Agency = () => {
     <div className="container mx-auto p-8">
         
       < AgencyDashboardHeader />
-      <div className="container mx-auto p-8 bg-gray-300 opacity-70 rounded-xl">
+      <div className="container mx-auto p-8 bg-gray-50  rounded-xl">
         
       {/* Jobs Section */}
       <section className="mb-6 max-w-5xl text-center mx-auto ">

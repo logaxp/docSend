@@ -35,19 +35,19 @@ const Explore = () => {
 
   return (
     <div className="container mx-auto mb-40 my-8 max-w-4xl">
-    <h2 className="text-2xl font-bold mb-8">Key Sectors Embracing DocSend for Digital Signatures</h2>
+    <h2 className="text-2xl font-extrabold text-center mb-8 bg-gray-700 py-1 w-3/4 rounded-xl mx-auto text-white">Key Sectors Embracing DocSend for Digital Signatures</h2>
 
       <div className="grid grid-cols-4 gap-4 mb-4">
         {visibleCategories.map((category, index) => (
-          <div key={index} className="p-4 border rounded-lg text-center hover:shadow-lg transition duration-300 ease-in-out">
+          <div key={index} className="p-4 border rounded-lg text-center hover:shadow-lg transition duration-300 ease-in-out bg-white">
             <FontAwesomeIcon icon={category.icon} className="text-red-500 text-3xl mb-2" />
-            <h3 className="font-semibold">{category.label}</h3>
+            <h3 className="font-semibold text-gray-900">{category.label}</h3>
           </div>
         ))}
       </div>
       <button
         onClick={() => setViewMore(!viewMore)}
-        className="text-md text-blue-600 hover:text-blue-800 transition duration-300 ease-in-out"
+        className="text-md bg-white px-2 py-1 text-gray-900 font-bold border hover:text-blue-800 transition duration-300 ease-in-out"
       >
         {viewMore ? 'View less' : 'View more'}
       </button>

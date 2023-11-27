@@ -5,6 +5,7 @@ module.exports = {
       height: {
         '128': '32rem', // 512px
         '132': '33rem', // 528px
+        '135': '38rem', // 576px
       },
       maxWidth: {
         '9xl': '144rem', // 2304px
