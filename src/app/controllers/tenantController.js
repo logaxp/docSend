@@ -49,12 +49,16 @@ class TenantController {
         };
         res.status(StatusCodes.CREATED).json(data);
         } catch (error) {
-        console.error(error.message);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Internal Server Error' });
+            console.error(error.message); //Display the error message
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Internal Server Error' });
         }
     }
 
     async activateTenant(req, res){
+        /*
+        *   handles new Tentant account activation.
+        */
+
         const activationCode = req.body.code;
         try{
             const response = await useTenantCase.activateTenant(activationCode);
@@ -73,12 +77,17 @@ class TenantController {
                 });
             }
         }catch(error){
-            console.log(error)
+            console.error(error.message)
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Internal Server Error' });
         }
     }
 
     async loginTenant(req, res){
+
+        /*
+        * Handles Tenant login authentication.
+        */
+
         const loginData = req.body;
        try{
 
@@ -92,8 +101,10 @@ class TenantController {
                 return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
             }
             const user = await useTenantCase.loginTenant(loginData);
+            if(!user){
+                return res.status(StatusCodes.NOT_FOUND).json({msg: "Account not found", status: StatusCodes.NOT_FOUND});
+            }
             const name = user.firstname +' '+ user.lastname;
-            // console.log(loginData.password);
             const correctPassword = await bcrypt.compare(loginData.password, user.password);
 
             if(!correctPassword){
@@ -102,13 +113,53 @@ class TenantController {
 
             // Generate token for existing tenant
             const token = await helper.createJWT(user.id, user.email);
-            
+
             return res.status(StatusCodes.OK).json({fullname: name, email: user.email, token: token});
 
        }catch(error){
-         throw new Error(error);
+            console.error(error.message)
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Internal Server Error' });
        }
     }
+
+    async createTenantStream(req, res) {
+        try{
+
+            // Run the form validation middleware
+            const validateStreamForm = formHelper.streamFormValidator();
+            await Promise.all(validateStreamForm.map(validation => validation.run(req)));
+
+            // Check for validation errors
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+            }
+            
+            const streamData = req.body;
+            const authUserJwt = req.user;
+
+            const tenantStream = await useTenantCase.createTenantStream(authUserJwt, streamData);
+            return res.status(StatusCodes.OK).json(tenantStream);
+
+        }catch(error){
+            console.error(error.message)
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Internal Server Error' });
+        }
+
+    }
+
+    async listTenantStream(req, res){
+        try{
+            const authUserJwt = req.user;
+            const tenantStreamList = await useTenantCase.listTenantStream(authUserJwt)
+            return res.status(StatusCodes.OK).json(tenantStreamList);
+        }catch(error){
+            console.error(error.message);
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Internal Server Error' });
+        }
+    }
+
+    
 
 }
 

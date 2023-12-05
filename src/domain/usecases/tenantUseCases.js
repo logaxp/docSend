@@ -1,7 +1,9 @@
 const db = require('../models/index');
-const { Role } = db;
+const { Role, User } = db;
 const tenantRespository = require('../repositories/tenantRepository');
 const userRespository = require('../repositories/userRepository');
+const helper = require('../../app/middlewares/helper');
+const { Op } = require('sequelize');
 
 class TenantUseCase{
 
@@ -12,11 +14,11 @@ class TenantUseCase{
             transaction = await db.rest.transaction();
            
             // tentant business logic
-            const tenant = await tenantRespository.create(tenantData, transaction);
+            const tenant = await tenantRespository.createTenant(tenantData, transaction);
             
             // role business logic
             const role = await Role.findOne({ 
-                where: {id: 1} 
+                where: {id: 2} // Role with id(2) => admin
             });
 
             // user business logic
@@ -30,25 +32,73 @@ class TenantUseCase{
             if (transaction) {
                 await transaction.rollback();
             }
-            throw new Error(error)
+            throw new Error(console.error(error.message))
         }
 
     }
 
     async activateTenant(activationCode){
-        // Tenant account activation busines login
+        // Tenant account activation business logic
         const response = await tenantRespository.activateTenant(activationCode)
         return response;
     }
 
     async loginTenant(loginData){
+        // Tenant account login business logic
         const loginEmail = loginData.email;
         const response = await tenantRespository.loginTenant(loginEmail)
-
-        // console.log(response.password);
-
         return response;
     }
+
+    async createTenantStream(authUserJwt, streamData){
+        let transaction;
+        try{
+            // Initialize the transaction using the correct Sequelize instance (e.g., db.rest)
+            transaction = await db.rest.transaction();
+
+            const user = await User.findOne({where: { id: authUserJwt.authId }})
+            if(!user){
+                throw new Error('User not found')
+            }
+
+            const prefix = streamData.firstname.toLowerCase().charAt(0) + streamData.lastname.toLowerCase() + '@';
+            const password = await helper.generatePassword(prefix);
+
+            const newStreamData = {
+                ...streamData, 
+                tenant_id: user.tenant_id,
+                password: password,
+                status: 1,
+            }
+            const stream = await tenantRespository.createTenantStream(newStreamData, transaction);
+            await transaction.commit();
+            return stream;
+
+
+        }catch(error){
+            // Check if transaction is defined before attempting rollback
+            if (transaction) {
+                await transaction.rollback();
+            }
+            throw new Error(console.error(error.message));
+        }
+    }
+
+    async listTenantStream(tenantData){
+        // List Tenant Streams
+        try{
+
+            const tenant = await User.findOne({
+                where: {id: tenantData.authId}
+            })
+            const tenantStreamList = await tenantRespository.listTenantStream(tenant)
+            return tenantStreamList;
+        }catch(error){
+            console.error(error.message);
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Internal Server Error' });
+        }
+    }
+
 
 }
 

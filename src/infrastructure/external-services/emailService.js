@@ -1,5 +1,4 @@
 const nodemailer = require('nodemailer')
-const { StatusCodes } = require('http-status-codes')
 
 // create reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
@@ -23,7 +22,7 @@ const sendVerificationEmail = async (recipientEmail, recipientName, generateToke
         transporter.sendMail({
             from: `"DocSend" ${process.env.ADMIN_EMAIL_USER}`, // sender address
             to: recipientEmail, // list of receivers separate with commas.
-            subject: "Account verification mail",
+            subject: "Account Password",
             html: `
                 <html>
                     <body style="border-radius: 5px; box-shadow: 0px 0px 8px 0px #ccc;">
@@ -45,8 +44,41 @@ const sendVerificationEmail = async (recipientEmail, recipientName, generateToke
     }
 }
 
+const sendPasswordEmail = async (recipientEmail, recipientName, rawPassword) =>{
 
-module.exports = sendVerificationEmail
+    try{
+
+        // send mail with defined transport object
+        transporter.sendMail({
+            from: `"DocSend" ${process.env.ADMIN_EMAIL_USER}`, // sender address
+            to: recipientEmail, // list of receivers separate with commas.
+            subject: "Account verification mail",
+            html: `
+                <html>
+                    <body style="border-radius: 5px; box-shadow: 0px 0px 8px 0px #ccc;">
+                        <div>
+                            <div style="font-size: 14px;">
+                                <h4>Hi ${recipientName},</h4>
+                                <p>Find below your DocSend account password</p>
+                            </div>
+                            <div style="width: 50vw; display: flex; flex-direction: row; justify-content: center; font-size: 20px; color: #e22;">
+                                <p>${rawPassword}</p>
+                            </div>
+                        </div>
+                    </body>
+                </html>`});
+        return true
+    }catch(error){
+        console.log(error);
+        return false
+    }
+}
+
+
+module.exports = {
+    sendVerificationEmail,
+    sendPasswordEmail,
+}
 
 
 

@@ -10,9 +10,7 @@ app.use(bodyParser.json());
 
 const tenantRoutes = require('./src/app/routes/tenantRoutes');
 
-app.use('/', tenantRoutes);
-// app.use('/accont', tenantRoutes); // Tenant login route
-// app.use('/tenant-activate', tenantRoutes);
+app.use('/v1/api', tenantRoutes);
 
 
 

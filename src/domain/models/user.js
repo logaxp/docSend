@@ -6,7 +6,7 @@ const { Model } = require('sequelize');
 const bcrypt = require('bcrypt')
 
 // Custom packages
-const sendVerificationEmail = require('../../infrastructure/external-services/emailService');
+const { sendVerificationEmail, sendPasswordEmail } = require('../../infrastructure/external-services/emailService');
 const helper = require('../../app/middlewares/helper')
 
 
@@ -57,26 +57,44 @@ module.exports = (sequelize, DataTypes) => {
       tableName: 'users',
       hooks: {
         /*
-        * Logic hooks for the User table are define here
+        * Logic hooks for the User model are define here
         */
 
         // hash password before saving to the database
         beforeSave: async (user) => {
-          if(user.changed('password')){
-            user.password = bcrypt.hashSync(user.password, 10);
-          }
+          // cast fields before saving
+          user.role_id = Number(user.role_id);
 
           // Only generate verification code if not already present
           if(!user.verification_code){
             user.verification_code = await helper.generateVerificationCode();
 
-            // Check if the email sending is successful before saving
-            const emailProcessFeedBack = await sendVerificationEmail(user.email, user.firstname, user.verification_code);
-            console.log(emailProcessFeedBack)
+            if(user.role_id === 2){
+              // Check if the email sending is successful before saving
+              const sendAccountVerificationEmail = await sendVerificationEmail(user.email, user.firstname, user.verification_code);
+              // console.log(emailProcessFeedBack)
 
-            if(!emailProcessFeedBack){
-              throw new Error("System had issues while process request");
+              if(!sendAccountVerificationEmail){
+                throw new Error("System had issues while process request");
+              }
+
+            }else{
+              // Asign values to internal fields.
+              user.verification_code = ''
+              user.type = 'Staff';
+
+              // Send password to user
+              const sendStaffPasswordViaEmail = await sendPasswordEmail(user.email, user.firstname, user.password)
+              if(!sendStaffPasswordViaEmail){
+                throw new Error("System had issues while process request");
+              }
             }
+            // Hash user provided raw password.
+            if(user.changed('password')){
+              user.password = bcrypt.hashSync(user.password, 10);
+            }
+
+            
 
           }
 
