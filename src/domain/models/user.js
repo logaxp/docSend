@@ -25,6 +25,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'user_id'
       });
 
+      User.hasMany(models.Templates, {
+        as: 'template',
+        foreignKey: 'user_id'
+      });
+
       User.belongsTo(models.Tenant, {
         as: 'tenant',
         foreignKey: 'tenant_id'
