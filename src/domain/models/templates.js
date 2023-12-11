@@ -24,7 +24,9 @@ module.exports = (sequelize, DataTypes) => {
     content: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'Templates',
+    underscored: true,
+    modelName: 'Template',
+    tableName: 'Templates'
   });
   return Templates;
 };

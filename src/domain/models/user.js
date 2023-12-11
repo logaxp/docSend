@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'user_id'
       });
 
-      User.hasMany(models.Templates, {
+      User.hasMany(models.Template, {
         as: 'template',
         foreignKey: 'user_id'
       });

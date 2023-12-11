@@ -1,6 +1,7 @@
 const { body, matchedData, validationResult } = require('express-validator');
 const db = require('../../domain/models/index');
-const { User } = db;
+const { Op } = require('sequelize');
+const { User, Template } = db;
 
 
 
@@ -20,8 +21,13 @@ const signupValidation = () => {
             });
         }),
         body('phone_no').optional().isMobilePhone().withMessage('Invalid phone number format'),
-        body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-        body('type').notEmpty().withMessage('User type is required'),
+        body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
+        .custom((value, {req}) => {
+            if(req.body.confirm_password != req.body.password){
+                return Promise.reject("Confirm password miss match, Confirm password must be equal to Password!");
+            }
+        }),
+        // body('type').notEmpty().withMessage('User type is required'),
         body('tenant_name').notEmpty().withMessage('Tenant name is required'),
       ];
 }
@@ -53,10 +59,33 @@ const streamFormValidator = () => {
     ]
 }
 
+const templateFormValidator = () => {
+    return [
+        body('name').notEmpty().withMessage('Template name is required')
+        .custom((value, {req}) => {
+            // Check if a the template name is already to the creator.
+            return Template.findOne({
+                where: {
+                    user_id: req.user.authId,
+                    name: {
+                        [Op.notIn]: [req.body.name]
+                    }
+                }
+            }).then((template) => {
+                if(template){
+                    return Promise.reject('Template name already exist, Please try another name!')
+                }
+            });
+        }),
+        body('content').notEmpty().withMessage('Content is required')
+    ];
+}
+
 
 module.exports = {
     signupValidation,
     loginFormValidator,
-    streamFormValidator
+    streamFormValidator,
+    templateFormValidator,
 }
 

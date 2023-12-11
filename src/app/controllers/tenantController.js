@@ -1,4 +1,4 @@
-const { body, validationResult } = require('express-validator');
+const { validationResult } = require('express-validator');
 const useTenantCase = require('../../domain/usecases/tenantUseCases');
 const { StatusCodes } = require('http-status-codes');
 const helper = require('../middlewares/helper');

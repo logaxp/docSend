@@ -37,7 +37,7 @@ class TenantRepository{
 
     async listTenantStream(tenant){
         try{
-            console.log(tenant.tenant_id)
+            // console.log(tenant.tenant_id)
             const streamList = await User.findAll({
                 where: {
                     tenant_id: tenant.tenant_id,
