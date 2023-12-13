@@ -91,6 +91,37 @@ class TemplatesController{
         }
     }
 
+    async searchTenantStream(req, res){
+        /*
+        *   Returns list of Tenant streams(staff, admin & other)
+        *   for document or template accessiblity previllege.
+        */ 
+        try{
+            const queryData = req.query
+            const authUserJwt = req.user
+
+            const queryResponse = await templateUseCase.searchTenantStream(queryData, authUserJwt)
+            if(queryResponse.length <= 0){
+                return res.status(StatusCodes.NOT_FOUND).json({
+                    msg: 'Search query return empty result',
+                    alt: 'No record found',
+                    status: StatusCodes.NOT_FOUND
+                });
+            }
+            return res.status(StatusCodes.OK).json({
+                data: queryResponse,
+                status: StatusCodes.OK
+            });
+
+        }catch(error){
+            console.log(error);
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                msg: `${error.message}`,
+                status: StatusCodes.INTERNAL_SERVER_ERROR
+            })
+        }
+    }
+
 
 
 

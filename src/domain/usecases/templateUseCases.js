@@ -3,7 +3,9 @@ const { User } = db;
 const templatesRepository = require('../repositories/templateRepository');
 const generatorHelper = require('../../app/middlewares/helper.generator');
 const helper = require('../../app/middlewares/helper')
-const {StatusCodes} = require('http-status-codes')
+const searchHelper = require('../../app/middlewares/helper.search')
+const {StatusCodes} = require('http-status-codes');
+const { Op } = require('sequelize');
 
 class TemplatesUseCase {
     async createTemplate(authUserJwt, templateData) {
@@ -60,6 +62,31 @@ class TemplatesUseCase {
             await helper.removeUploadedFile(documentData.path, documentData.name)
             return false;
         }
+    }
+
+    async searchTenantStream(searchData, authUserJwt){
+        try{
+
+
+            const user = await User.findOne({
+                where: {id: authUserJwt.authId}
+            })
+
+            if(!user){
+                return console.error(user)
+            }
+
+            // use advanced search middleware
+            const whereClause = await searchHelper.advanceTenantStreamSearch(searchData, user.tenant_id);
+
+            // send advance search pattern to the repository.
+            const queryResponse = await templatesRepository.searchTenantStream(whereClause)
+            return queryResponse;
+
+        }catch(error){
+            console.error(error.message)
+        }
+
     }
 
     async fitchAllTenantTemplate(tenantData){
