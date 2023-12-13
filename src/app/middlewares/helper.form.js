@@ -2,6 +2,7 @@ const { body, matchedData, validationResult } = require('express-validator');
 const db = require('../../domain/models/index');
 const { Op } = require('sequelize');
 const { User, Template } = db;
+const {upload} = require('../middlewares/helper.file.upload')
 
 
 
@@ -81,11 +82,24 @@ const templateFormValidator = () => {
     ];
 }
 
+const templateUploadFormValidator = () =>{
+    return [
+        body('name').notEmpty().withMessage('Please enter a Template name'),
+        body('file').custom((value, { req }) => {
+            if(!req.file){
+                return Promise.reject('Please select a document template file')
+            }
+            return Promise.resolve();
+        }),
+    ];
+}
+
 
 module.exports = {
     signupValidation,
     loginFormValidator,
     streamFormValidator,
     templateFormValidator,
+    templateUploadFormValidator
 }
 

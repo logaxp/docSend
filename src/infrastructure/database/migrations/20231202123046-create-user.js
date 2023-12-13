@@ -27,6 +27,15 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
+      // document_id: {
+      //   type: Sequelize.INTEGER,
+      //   references: {
+      //     model: 'Documents',
+      //     key: 'id',
+      //   },
+      //   onUpdate: 'CASCADE',
+      //   onDelete: 'CASCADE',
+      // },
       firstname: {
         type: Sequelize.STRING
       },

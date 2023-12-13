@@ -30,6 +30,22 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'user_id'
       });
 
+      User.hasMany(models.Folders, {
+        as: 'folder',
+        foreignKey: 'id'
+      })
+      
+      User.belongsToMany(models.Documents, {
+        through: models.UserDocument,
+        foreignKey: 'user_id',
+      });
+      
+      User.hasOne(models.Documents, {
+        as: 'document',
+        foreignKey: 'user_id'
+      })
+      
+
       User.belongsTo(models.Tenant, {
         as: 'tenant',
         foreignKey: 'tenant_id'

@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Templates extends Model {
+  class UserDocument extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,27 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-
-      Templates.belongsTo(models.User, {
-        as: 'user',
-        foreignKey: 'user_id'
-      });
-
     }
   }
-  Templates.init({
-    name: DataTypes.STRING,
-    content: DataTypes.STRING
+  UserDocument.init({
+    document_id: DataTypes.INTEGER,
+    user_id: DataTypes.INTEGER
   }, {
     sequelize,
     underscored: true,
-    modelName: 'Template',
-    tableName: 'templates',
-    hooks: {
-      beforeSave: async (template) => {
-
-      }
-    }
+    modelName: 'UserDocument',
+    tableName: 'user_documents'
   });
-  return Templates;
+  return UserDocument;
 };
