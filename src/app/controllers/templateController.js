@@ -122,6 +122,19 @@ class TemplatesController{
         }
     }
 
+    async grantTenantStreamAccessToDocument(req, res){
+        try{
+            const requestData = req.body.requestBody;
+            
+           const permissionResponse = await templateUseCase.grantTenantStreamAccessToDocument(requestData);
+
+            return res.status(StatusCodes.OK).json(requestData);
+        }catch(error){
+            console.log(error)
+        }
+
+    }
+
 
 
 

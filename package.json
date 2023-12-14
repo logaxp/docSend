@@ -10,7 +10,9 @@
     "migration:undo": "npx sequelize-cli db:migrate:undo --url mysql://root:@127.0.0.1:3306/doc_send_db",
     "migration:undo:all": "npx sequelize-cli db:migrate:undo:all --url mysql://root:@127.0.0.1:3306/doc_send_db",
     "seed:all": "npx sequelize-cli db:seed:all --url mysql://root:@127.0.0.1:3306/doc_send_db",
+    "seed:single": "npx sequelize-cli db:seed --seed 20231214091702-document-permission.js --url mysql://root:@127.0.0.1:3306/doc_send_db",
     "create:seed:roles": "npx sequelize-cli seed:generate --name roles",
+    "create:seed:document:permission": "npx sequelize-cli seed:generate --name document-permission",
     "create:seed:super": "npx sequelize-cli seed:generate --name super-admin-user"
   },
   "keywords": [

@@ -9,14 +9,14 @@ module.exports = {
       const [user] = await queryInterface.sequelize.query(`
         INSERT INTO users 
         (firstname, lastname, email, phone_no, password, type, status, created_at, updated_at) 
-        VALUES ('John', 'Doe', 'demo@docsend.com', '+234 703487228', '${password}', 'org', 1, NOW(), NOW())
+        VALUES ('John', 'Doe', 'demo@docsend.com', '+234 703487228', '${password}', 'Organization', 1, NOW(), NOW())
       `);
 
       const [role] = await queryInterface.sequelize.query(`
         SELECT id FROM roles WHERE role_name='super admin'
       `);
 
-      console.log(role[0].id);
+      // console.log(role[0].id);
 
       await queryInterface.sequelize.query(`
         INSERT INTO user_role

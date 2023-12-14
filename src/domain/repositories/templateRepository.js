@@ -1,5 +1,10 @@
 const db = require('../models/index');
-const { Template, User, Documents } = db;
+const { 
+    Template, 
+    User, 
+    Documents,
+    DocumentPermissions
+} = db;
 
 
 class TemplatesRepository{
@@ -16,6 +21,18 @@ class TemplatesRepository{
         *   Create and return uploaded document instance metadata
         */
         return await Documents.create(documentData, transaction);
+    }
+
+    async documentCreatorPermission(permissionDataArray, transaction){
+        /*
+        *   Give all permission previllages to creator
+        */
+        
+        const permissions = await Promise.all(permissionDataArray.map(permissionData => {
+            return DocumentPermissions.create(permissionData, { transaction });
+          }));
+        
+          return permissions;
     }
 
     async searchTenantStream(whereClause){

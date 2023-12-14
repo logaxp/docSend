@@ -2,20 +2,32 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Document_permissions', {
+    await queryInterface.createTable('DocumentPermissions', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      role_id: {
+      user_id: {
+        type: Sequelize.INTEGER
+      },
+      document_id: {
         type: Sequelize.INTEGER
       },
       can_view: {
         type: Sequelize.BOOLEAN
       },
       can_edit: {
+        type: Sequelize.BOOLEAN
+      },
+      can_delete: {
+        type: Sequelize.BOOLEAN
+      },
+      can_share: {
+        type: Sequelize.BOOLEAN
+      },
+      can_download: {
         type: Sequelize.BOOLEAN
       },
       created_at: {
@@ -29,6 +41,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Document_permissions');
+    await queryInterface.dropTable('DocumentPermissions');
   }
 };

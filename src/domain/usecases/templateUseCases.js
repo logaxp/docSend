@@ -1,5 +1,5 @@
 const db = require('../models/index')
-const { User } = db;
+const { User, DocumentPermissions, Documents } = db;
 const templatesRepository = require('../repositories/templateRepository');
 const generatorHelper = require('../../app/middlewares/helper.generator');
 const helper = require('../../app/middlewares/helper')
@@ -43,24 +43,42 @@ class TemplatesUseCase {
         }
     }
 
-    async uploadCustomTemplate(documentData){
+    async uploadCustomTemplate(documentData) {
         let transaction;
-        try{
-
-            // Initialize the transaction using the correct Sequelize instance (e.g., db.rest)
-            transaction = await db.rest.transaction();
-            const document = await templatesRepository.uploadCustomTemplate(documentData, transaction)
-            
-            // save doc template data
-            await transaction.commit()
-
-            return document;
-
-        }catch(error){
-            await transaction.rollback();
-            console.error('Error: ', error)
-            await helper.removeUploadedFile(documentData.path, documentData.name)
-            return false;
+        try {
+          // Initialize the transaction using the correct Sequelize instance (e.g., db.rest)
+          transaction = await db.rest.transaction();
+      
+          // Pass document metadata to the use case template
+          const document = await templatesRepository.uploadCustomTemplate(documentData, transaction);
+      
+          // Set document permissions for the creator
+          const permissionDataArray = [
+            {
+              user_id: documentData.user_id,
+              document_id: document.id,
+              can_view: 1,
+              can_edit: 1,
+              can_delete: 1,
+              can_share: 1,
+              can_download: 1,
+              created_at: new Date(),
+              updated_at: new Date(),
+            },
+          ];
+      
+          // Pass document permissions to the use case template
+          await templatesRepository.documentCreatorPermission(permissionDataArray, transaction);
+      
+          // Save doc template data
+          await transaction.commit();
+      
+          return document;
+        } catch (error) {
+          await transaction.rollback();
+          console.error('Error: ', error);
+          await helper.removeUploadedFile(documentData.path, documentData.name);
+          return false;
         }
     }
 
@@ -87,6 +105,28 @@ class TemplatesUseCase {
             console.error(error.message)
         }
 
+    }
+
+    async grantTenantStreamAccessToDocument(permissionData){
+        try{
+
+            console.log(permissionData)
+
+            const models = [
+                { 
+                    userModel: User,
+                    documentModel: Documents,
+                    permissionModel: DocumentPermissions 
+                }
+            ];
+    
+            // validate permission requestData
+            const validatorResponse = await helper.validateDocumentPermission(permissionData, models);
+            return validatorResponse;
+        }catch(error){
+            console.error(error)
+            return;
+        }
     }
 
     async fitchAllTenantTemplate(tenantData){

@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Document_permissions extends Model {
+  class DocumentPermissions extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -14,16 +14,20 @@ module.exports = (sequelize, DataTypes) => {
       // Document_permissions.belongsTo(models.Templates)
     }
   }
-  Document_permissions.init({
+  DocumentPermissions.init({
+    user_id: DataTypes.INTEGER,
     document_id: DataTypes.INTEGER,
-    role_id: DataTypes.INTEGER,
     can_view: DataTypes.BOOLEAN,
-    can_edit: DataTypes.BOOLEAN
+    can_edit: DataTypes.BOOLEAN,
+    can_delete: DataTypes.BOOLEAN,
+    can_edit: DataTypes.BOOLEAN,
+    can_share: DataTypes.BOOLEAN,
+    can_download: DataTypes.BOOLEAN,
   }, {
     sequelize,
     underscored: true,
-    modelName: 'Document_permissions',
-    tableName: 'Permissions'
+    modelName: 'DocumentPermissions',
+    tableName: 'DocumentPermissions'
   });
-  return Document_permissions;
+  return DocumentPermissions;
 };
