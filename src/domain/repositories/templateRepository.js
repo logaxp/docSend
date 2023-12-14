@@ -23,7 +23,7 @@ class TemplatesRepository{
         return await Documents.create(documentData, transaction);
     }
 
-    async documentCreatorPermission(permissionDataArray, transaction){
+    async setDocumentCreatorPermission(permissionDataArray, transaction){
         /*
         *   Give all permission previllages to creator
         */
@@ -33,6 +33,18 @@ class TemplatesRepository{
           }));
         
           return permissions;
+    }
+
+    async documentNoneCreatorPermission(permissionDataArray, transaction){
+        /*
+        *   Give permission previllages to creator
+        */
+        
+        await Promise.all(permissionDataArray.map(permissionData => {
+            return DocumentPermissions.create(permissionData, { transaction });
+          }));
+        
+          return true;
     }
 
     async searchTenantStream(whereClause){

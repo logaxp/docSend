@@ -81,58 +81,6 @@ module.exports = {
 
         return userFolderPath;
     },
-
-    validateDocumentPermission: async (requestBody, models) => {
-        try{
-
-            const modelObject = models;
-
-            // console.log(modelObject);
-            
-            // Destructure models data
-            const [User] = modelObject.map((model) => model.userModel);
-            const [Document] = modelObject.map((model) => model.documentModel);
-            const [Permission] = modelObject.map((model) => model.permissionModel);
-
-             // Destructure validate userIds & permissionIds
-             const userIds = requestBody.map((user) => user.user_id);
-             const documentIds = requestBody.map((permission) => permission.document_id);
-             const permissionIds = requestBody.map((permission) => permission.permission_id);
-
-            //  console.log(permissionIds)
-            //  return;
- 
-            //  Validate userIds
-             const validateUsers = await User.findAll({
-                 where: {id: userIds}
-             });
- 
-            //  Validate documentIds
-             const validateDocument = await Document.findOne({
-                 where: {id: documentIds}
-             });
-
-            //   Validate permissionIds
-             const validatePermissions = await Permission.findAll({
-                where: {id: permissionIds}
-            });
-
-             if(validateUsers.length !== userIds.length 
-                || 
-                validatePermissions.length !== permissionIds.length
-                ||
-                !validateDocument){
-
-                return Promise.reject('Invalid user id or document id or permission id detected. Transaction aborted.');
-             }
-             return Promise.resolve();
-
-        }catch(error){
-            console.error(error);
-            return;
-        }
-    },
-
 }
 
 

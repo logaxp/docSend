@@ -1,6 +1,6 @@
 
 node_modules
-template
+templates/custom/pdf/
 
 .env
 .text.txt

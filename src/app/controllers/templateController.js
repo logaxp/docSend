@@ -122,15 +122,24 @@ class TemplatesController{
         }
     }
 
-    async grantTenantStreamAccessToDocument(req, res){
+    async setDocumentNoneCreatorPermission(req, res){
         try{
             const requestData = req.body.requestBody;
             
-           const permissionResponse = await templateUseCase.grantTenantStreamAccessToDocument(requestData);
+           await templateUseCase.setDocumentNoneCreatorPermission(requestData);
 
-            return res.status(StatusCodes.OK).json(requestData);
+           return res.status(StatusCodes.OK).json({
+            msg: 'Permission granted successfully!',
+            status: StatusCodes.OK
+        });
+            
+
         }catch(error){
             console.log(error)
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                msg: `${error.message}`,
+                status: StatusCodes.INTERNAL_SERVER_ERROR
+            })
         }
 
     }

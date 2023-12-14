@@ -2,7 +2,8 @@ const db = require('../models/index')
 const { User, DocumentPermissions, Documents } = db;
 const templatesRepository = require('../repositories/templateRepository');
 const generatorHelper = require('../../app/middlewares/helper.generator');
-const helper = require('../../app/middlewares/helper')
+const helper = require('../../app/middlewares/helper');
+const documentPermissionHelper = require('../../app/middlewares/helper.document.permission');
 const searchHelper = require('../../app/middlewares/helper.search')
 const {StatusCodes} = require('http-status-codes');
 const { Op } = require('sequelize');
@@ -67,8 +68,8 @@ class TemplatesUseCase {
             },
           ];
       
-          // Pass document permissions to the use case template
-          await templatesRepository.documentCreatorPermission(permissionDataArray, transaction);
+          // Pass document permissions to the repository template
+          await templatesRepository.documentNoneCreatorPermission(permissionDataArray, transaction);
       
           // Save doc template data
           await transaction.commit();
@@ -106,25 +107,69 @@ class TemplatesUseCase {
         }
 
     }
+    
+/**
+ *
+ *
+ * @param {*} permissionData
+ * @return {*} 
+ * @memberof TemplatesUseCase
+ */
+async setDocumentNoneCreatorPermission(permissionData){
+        
+        const models = [
+            { 
+                userModel: User,
+                documentModel: Documents,
+                permissionModel: DocumentPermissions 
+            }
+        ];
 
-    async grantTenantStreamAccessToDocument(permissionData){
+        const permissionDataArray = permissionData.map(intity => ({
+            user_id: intity.user_id,
+            document_id: intity.document_id,
+            can_view: 1,
+            can_edit: 0,
+            can_delete: 0,
+            can_share: 0,
+            can_download: 0,
+            created_at: new Date(),
+            updated_at: new Date(),
+        }));
+
+
         try{
 
-            console.log(permissionData)
-
-            const models = [
-                { 
-                    userModel: User,
-                    documentModel: Documents,
-                    permissionModel: DocumentPermissions 
-                }
-            ];
-    
             // validate permission requestData
-            const validatorResponse = await helper.validateDocumentPermission(permissionData, models);
-            return validatorResponse;
+            // const validatorResponse = 
+            await documentPermissionHelper.validateDocumentPermission(permissionData, models);
+            // if(!validatorResponse){
+            //     // Write to log file
+            //     return validatorResponse;
+            // }
+
+            // Check existing permissions
+            const existingPermissions = await DocumentPermissions.findAll({
+                where: {
+                user_id: { [Op.in]: permissionDataArray.map(intity => intity.user_id) },
+                document_id: { [Op.in]: permissionDataArray.map(intity => intity.document_id) }
+                }
+            });
+
+
+            // Filter out permissionDataArray entries that already exist
+            const newPermissions = permissionDataArray.filter(permissionData => {
+                return !existingPermissions.some(existingPermission =>
+                existingPermission.user_id === permissionData.user_id &&
+                existingPermission.document_id === permissionData.document_id
+                );
+            });
+
+            const setPermission = await templatesRepository.documentNoneCreatorPermission(newPermissions)
+            return setPermission;
+
         }catch(error){
-            console.error(error)
+            console.error(error.message)
             return;
         }
     }
