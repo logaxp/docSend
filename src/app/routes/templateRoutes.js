@@ -13,6 +13,7 @@ router.post('/template/create', authMiddleware, templateController.createCustomT
 .post('/upload/template', authMiddleware, upload.single('file'), templateController.uploadCustomTemplate)
 .get('/tenant/search/access', authMiddleware, templateController.searchTenantStream)
 .post('/tenant/document/grant/access', authMiddleware, templateController.setDocumentNoneCreatorPermission)
+.patch('/tenant/document/grant/access', authMiddleware, templateController.updateDocumentNoneCreatorPermission)
 
 
 module.exports = router;

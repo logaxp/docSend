@@ -28,10 +28,10 @@ module.exports = {
         return password;
     },
 
-    createJWT: async (id, email) => {
+    createJWT: async (id, email, tenant_id) => {
         try {
             // Create a JWT token with user ID and email
-            const token = jwt.sign({ authId: id, email: email }, process.env.SECRET_KEY, {
+            const token = jwt.sign({ authId: id, email: email, tenantId: tenant_id }, process.env.SECRET_KEY, {
                 expiresIn: process.env.TOKEN_TIME
             });
     

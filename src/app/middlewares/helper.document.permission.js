@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 
 
 
@@ -14,6 +15,7 @@ module.exports = {
 
              // Destructure validate userIds & permissionIds
              const userIds = requestBody.map((user) => user.user_id);
+             const tenantIds = requestBody.map((tenant) => tenant.tenant_id);
              const documentIds = requestBody.map((permission) => permission.document_id);
             
  
@@ -29,18 +31,33 @@ module.exports = {
 
 
              if(validateUsers.length !== userIds.length || !validateDocument){
-                return Promise.reject('Invalid user id or document id or permission id detected. Transaction aborted.');
+                return false;
+                // Promise.reject('Invalid user id or document id or permission id detected. Transaction aborted.');
              }
-             return Promise.resolve();
+             return true;
+            //  Promise.resolve();
 
         }catch(error){
             console.error(error);
             return;
         }
     },
-    // preventDocumentPermissionDuplicate: async () => {
-
-    // },
+    preventDocumentPermissionDuplicate: async (requestBody, model) => {
+        // checks if a user already has permission to a specific document
+        // if true, terminates new permission initiation else proceed initiate
+        const permision = await model.findOne({
+            where: {
+                [Op.and]: [
+                    { user_id: requestBody.user_id },
+                    { document_id: requestBody.document_id },
+                    { creator_id: requestBody.creator_id }
+                ]
+            }
+        });
+        // If document_id and user_id doesn't return an instance
+        // then return true else return false
+        return permision===null?true:permision.isNewRecord
+    },
 }
 
 

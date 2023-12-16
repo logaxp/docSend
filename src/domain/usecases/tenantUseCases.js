@@ -58,7 +58,7 @@ class TenantUseCase{
 
             const user = await User.findOne({where: { id: authUserJwt.authId }})
             if(!user){
-                throw new Error('User not found')
+                throw new Error('Please login with your credentials')
             }
 
             const prefix = streamData.firstname.toLowerCase().charAt(0) + streamData.lastname.toLowerCase() + '@';
@@ -80,6 +80,7 @@ class TenantUseCase{
             if (transaction) {
                 await transaction.rollback();
             }
+            // console.log(error);
             throw new Error(console.error(error.message));
         }
     }

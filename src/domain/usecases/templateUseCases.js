@@ -56,6 +56,7 @@ class TemplatesUseCase {
           // Set document permissions for the creator
           const permissionDataArray = [
             {
+              creator_id: documentData.creator_id,
               user_id: documentData.user_id,
               document_id: document.id,
               can_view: 1,
@@ -111,8 +112,12 @@ class TemplatesUseCase {
 /**
  *
  *
- * @param {*} permissionData
- * @return {*} 
+ * @param {*
+ *  Contains users permission data to be save in the database
+ * } permissionData
+ * @return {
+ *  return instance of Permission 
+ * } 
  * @memberof TemplatesUseCase
  */
 async setDocumentNoneCreatorPermission(permissionData){
@@ -125,47 +130,43 @@ async setDocumentNoneCreatorPermission(permissionData){
             }
         ];
 
-        const permissionDataArray = permissionData.map(intity => ({
-            user_id: intity.user_id,
-            document_id: intity.document_id,
-            can_view: 1,
-            can_edit: 0,
-            can_delete: 0,
-            can_share: 0,
-            can_download: 0,
-            created_at: new Date(),
-            updated_at: new Date(),
-        }));
-
-
         try{
 
-            // validate permission requestData
-            // const validatorResponse = 
-            await documentPermissionHelper.validateDocumentPermission(permissionData, models);
-            // if(!validatorResponse){
-            //     // Write to log file
-            //     return validatorResponse;
-            // }
+            // Current user jwt data
+            const authUserJwt = permissionData.user
 
-            // Check existing permissions
-            const existingPermissions = await DocumentPermissions.findAll({
-                where: {
-                user_id: { [Op.in]: permissionDataArray.map(intity => intity.user_id) },
-                document_id: { [Op.in]: permissionDataArray.map(intity => intity.document_id) }
-                }
+            
+            const creator = await User.findOne({
+                where: { id: authUserJwt.authId }
             });
 
+            if(!creator){
+                return;
+            }
 
-            // Filter out permissionDataArray entries that already exist
-            const newPermissions = permissionDataArray.filter(permissionData => {
-                return !existingPermissions.some(existingPermission =>
-                existingPermission.user_id === permissionData.user_id &&
-                existingPermission.document_id === permissionData.document_id
-                );
-            });
+            const requestData = { ...permissionData.body, creator_id: creator.id };
 
-            const setPermission = await templatesRepository.documentNoneCreatorPermission(newPermissions)
+            // Check if creator shares tenant relatioship with user
+            if(creator.tenant_id !== requestData.tenant_id){
+                console.error('Tenant relationship miss match, permission creation failed')
+                // return  'Tenant relationship miss match';
+                return false;
+            }
+
+            const response = await documentPermissionHelper.validateDocumentPermission([requestData], models);
+            if(!response){
+                false;
+            }
+            
+            const model = DocumentPermissions;
+            const isPermissionSet = await documentPermissionHelper.preventDocumentPermissionDuplicate(requestData, model);
+            
+            if(isPermissionSet === false){
+                // if user has permission set for document in context return
+                // sendback this message.
+                return 'User already has permission to this document.'
+            }
+            const setPermission = await templatesRepository.documentNoneCreatorPermission([requestData])
             return setPermission;
 
         }catch(error){
@@ -174,12 +175,72 @@ async setDocumentNoneCreatorPermission(permissionData){
         }
     }
 
+    async updateDocumentNoneCreatorPermission(updateData){
+
+        const authUserJwt = updateData.user;
+        const _updateData = updateData.body;
+
+        const models = [
+            { 
+                userModel: User,
+                documentModel: Documents,
+                permissionModel: DocumentPermissions 
+            }
+        ];
+
+        try{
+            
+            // Check if creator shares tenant relatioship with user
+            const creator = await User.findOne({
+                where: { id: authUserJwt.authId }
+            });
+
+            if(!creator){
+                console.error('You\'re not the creator of the document')
+                return false;
+            } 
+
+
+            const newUpdateDataClone = { ..._updateData, creator_id: creator.id };
+
+            if(creator.tenant_id !== _updateData.tenant_id){
+                console.error('Tenant relationship miss match, permission update failed')
+                // return  'Tenant relationship miss match';
+                return false;
+            }
+
+            const response = await documentPermissionHelper.validateDocumentPermission([newUpdateDataClone], models);
+            if(!response){
+                false;
+            }
+
+            // console.log(newUpdateDataClone)
+
+            const model = DocumentPermissions;
+            const isPermissionSet = await documentPermissionHelper.preventDocumentPermissionDuplicate(newUpdateDataClone, model);
+            
+            if(isPermissionSet === true){
+                // if user has permission set for document in context return
+                // sendback this message.
+                return 'Document or User doesn\'t exist.'
+            }
+
+            // If pass send payload to templateRepository template
+            const setNewPermission = await templatesRepository.updateNoneDocumentCreatorPermission(newUpdateDataClone)
+            return setNewPermission;
+
+        }catch(error){
+            console.error(error)
+        }
+    }
+
     async fitchAllTenantTemplate(tenantData){
         try{
             const tenantTemplate = await templatesRepository.fitchAllTenantTemplate(tenantData.authId);
             return tenantTemplate;
         }catch(error){
-            console.error('Error: ', error.message)
+            console.error(error.message)
+            return;
         }
     }
 }

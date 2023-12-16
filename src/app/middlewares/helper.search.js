@@ -16,6 +16,7 @@ module.exports = {
 
             // Iterate over the query keys in the Object
             Object.keys(queryData).forEach((key) => {
+                
                 // Append every key in the search queryData and skip search keyword(keyword)
                 if(key !== 'search_keyword' && queryData[key] === 'true'){
                     searchConditions[key] = {

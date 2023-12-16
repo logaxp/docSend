@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const db = require('../models/index');
 const { 
     Template, 
@@ -40,11 +41,37 @@ class TemplatesRepository{
         *   Give permission previllages to creator
         */
         
-        await Promise.all(permissionDataArray.map(permissionData => {
+        const permissions = await Promise.all(permissionDataArray.map(permissionData => {
             return DocumentPermissions.create(permissionData, { transaction });
           }));
         
-          return true;
+          return permissions;
+    }
+
+
+    async updateNoneDocumentCreatorPermission(updateData){
+        /** @type {*
+         * Update document permission for a user
+         * } */
+        const updateResponse = await DocumentPermissions.update(
+            {
+                can_view: updateData.can_view,
+                can_edit: updateData.can_edit,
+                can_delete: updateData.can_delete,
+                can_share: updateData.can_share,
+                can_download: updateData.can_download
+            },
+            { where: {
+                [Op.and]: [
+                    {user_id: updateData.user_id},
+                    {document_id: updateData.document_id}
+                ]
+            }}
+        );
+        if(updateResponse.length > 0){
+            return true;
+        }
+        return false;
     }
 
     async searchTenantStream(whereClause){

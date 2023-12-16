@@ -2,5 +2,5 @@
 node_modules
 templates/custom/pdf/
 
-.env
+# .env
 .text.txt

@@ -11,12 +11,14 @@ class TenantController {
   async createTenant(req, res) {
     try {
 
+        // console.log("entry", req.body)
         // Run the form validation middleware
         const validateTenantForm = formHelper.signupValidation();
         await Promise.all(validateTenantForm.map(validation => validation.run(req)));
-
         // Check for validation errors
+        
         const errors = validationResult(req);
+        // console.log("entry", errors)
         if (!errors.isEmpty()) {
             return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
         }
@@ -39,7 +41,7 @@ class TenantController {
         const user = await useTenantCase.createTenant(tenantData, userData);
 
         // Generate login token for user
-        const token = await helper.createJWT(user.id, user.email);
+        const token = await helper.createJWT(user.id, user.email, user.tenant_id);
 
         const data = {
             id: user.id,

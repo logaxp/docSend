@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       Documents.belongsTo(models.User, {
         as: 'user',
         foreignKey: 'id'
-      })
+      });
 
     }
   }
@@ -34,7 +34,12 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     underscored: true,
     modelName: 'Documents',
-    tableName: 'documents'
+    tableName: 'documents',
+    // hooks: {
+    //   beforeBulkCreate: async (document) => {
+
+    //   }
+    // }
   });
   return Documents;
 };

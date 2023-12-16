@@ -15,6 +15,9 @@ module.exports = {
       document_id: {
         type: Sequelize.INTEGER
       },
+      creator_id: {
+        type: Sequelize.INTEGER
+      },
       can_view: {
         type: Sequelize.BOOLEAN
       },

@@ -60,6 +60,7 @@ class TemplatesController{
             const access_token = await helper.cryptoRandomString(20)
 
             const documentData = {
+                creator_id: authUserJwt.authId,
                 user_id: authUserJwt.authId,
                 access_token: access_token,
                 name: documentName,
@@ -121,30 +122,64 @@ class TemplatesController{
             })
         }
     }
+/**
+ *
+ *
+ * @param {*} req
+ * @param {*} res
+ * @return {*} 
+ * @memberof TemplatesController
+ */
+async setDocumentNoneCreatorPermission(req, res){
 
-    async setDocumentNoneCreatorPermission(req, res){
         try{
-            const requestData = req.body.requestBody;
-            
-           await templateUseCase.setDocumentNoneCreatorPermission(requestData);
-
-           return res.status(StatusCodes.OK).json({
-            msg: 'Permission granted successfully!',
-            status: StatusCodes.OK
-        });
-            
+           const permissionResponse = await templateUseCase.setDocumentNoneCreatorPermission(req);
+           if(!permissionResponse){
+                return res.status(StatusCodes.BAD_REQUEST).json({
+                    msg: 'They was an error setting permission.',
+                    status: StatusCodes.BAD_REQUEST
+                });
+            }
+            return res.status(StatusCodes.OK).json({
+                msg: permissionResponse,
+                status: StatusCodes.OK
+            });
 
         }catch(error){
             console.log(error)
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
                 msg: `${error.message}`,
                 status: StatusCodes.INTERNAL_SERVER_ERROR
-            })
+            });
         }
 
     }
 
 
+    async updateDocumentNoneCreatorPermission(req, res){
+        try{
+            const updateBody = req;
+            const newDocumentPermission = await templateUseCase.updateDocumentNoneCreatorPermission(updateBody)
+            // console.log(newDocumentPermission)
+            if(newDocumentPermission){
+                return res.status(StatusCodes.OK).json({
+                    msg: newDocumentPermission===true?'Permission granted successfully!':newDocumentPermission,
+                    // msg: 'Permission granted successfully!',
+                    status: StatusCodes.OK
+                });
+            }
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                msg: 'Permission process failed, Internal Server Error',
+                status: StatusCodes.INTERNAL_SERVER_ERROR
+            });
+
+        }catch(error){
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                msg: `${error.message}`,
+                status: StatusCodes.INTERNAL_SERVER_ERROR
+            });
+        }
+    }
 
 
     async fitchTenantTemplate(req, res){
