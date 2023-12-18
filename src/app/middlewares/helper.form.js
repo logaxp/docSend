@@ -22,12 +22,14 @@ const signupValidation = () => {
             });
         }),
         body('phone_no').optional().isMobilePhone().withMessage('Invalid phone number format'),
-        body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-        // .custom((value, {req}) => {
-        //     if(req.body.confirm_password != req.body.password){
-        //         return Promise.reject("Confirm password miss match, Confirm password must be equal to Password!");
-        //     }
-        // }),
+        body('password').isLength({ min: 6 })
+        .withMessage('Password must be at least 6 characters')
+        .custom((value, {req}) => {
+            if(req.body.confirm_password != req.body.password){
+                return Promise.reject("Confirm password miss match, Confirm password must be equal to Password!");
+            }
+            return Promise.resolve()
+        }),
         // body('type').notEmpty().withMessage('User type is required'),
         body('tenant_name').notEmpty().withMessage('Tenant name is required'),
       ];

@@ -26,6 +26,8 @@ class TenantController {
         // Continue with your existing logic
         const payload = req.body;
 
+        console.log(payload)
+
         const userData = {
             firstname: payload.firstname,
             lastname: payload.lastname,
