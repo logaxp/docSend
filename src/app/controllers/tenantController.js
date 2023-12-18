@@ -26,8 +26,6 @@ class TenantController {
         // Continue with your existing logic
         const payload = req.body;
 
-        console.log(payload)
-
         const userData = {
             firstname: payload.firstname,
             lastname: payload.lastname,
@@ -37,7 +35,8 @@ class TenantController {
             type: payload.type,
         };
 
-        const tenantData = { tenant_name: payload.tenant_name };
+        const tenantName = payload.tenant_name!==''?payload.tenant_name:payload.firstname[0].toUpperCase()+payload.lastname[0].toUpperCase();
+        const tenantData = { tenant_name: tenantName };
 
         // Create new user if all conditions are passed
         const user = await useTenantCase.createTenant(tenantData, userData);

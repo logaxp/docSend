@@ -36,7 +36,7 @@ const signupValidation = () => {
             return Promise.resolve()
         }),
         // body('type').notEmpty().withMessage('User type is required'),
-        body('tenant_name').notEmpty().withMessage('Tenant name is required'),
+        // body('tenant_name').notEmpty().withMessage('Tenant name is required'),
       ];
 }
 
