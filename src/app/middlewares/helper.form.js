@@ -8,8 +8,12 @@ const {upload} = require('../middlewares/helper.file.upload')
 
 const signupValidation = () => {
     return [
-        body('firstname').notEmpty().withMessage('First name is required'),
-        body('lastname').notEmpty().withMessage('Last name is required'),
+        body('firstname').notEmpty()
+        .withMessage('First name is required')
+        .isLength({min: 2}).withMessage('Minimum first name character must be 2'),
+        body('lastname').notEmpty()
+        .withMessage('Last name is required')
+        .isLength({min: 2}).withMessage('Minimum last name character must be 2'),
         body('email').isEmail().withMessage('Invalid email format')
         .custom((value, {req}) => {
             return User.findOne({
@@ -19,6 +23,7 @@ const signupValidation = () => {
                 if(user){
                     return Promise.reject("Email is already in use, Please try another one!");
                 }
+                return Promise.resolve()
             });
         }),
         body('phone_no').optional().isMobilePhone().withMessage('Invalid phone number format'),
