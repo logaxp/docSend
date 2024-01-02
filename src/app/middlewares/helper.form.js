@@ -92,7 +92,7 @@ const templateFormValidator = () => {
 const templateUploadFormValidator = () =>{
     return [
         body('name').notEmpty().withMessage('Please enter a Template name'),
-        body('file').custom((value, { req }) => {
+        body('template').custom((value, { req }) => {
             if(!req.file){
                 return Promise.reject('Please select a document template file')
             }
@@ -101,12 +101,27 @@ const templateUploadFormValidator = () =>{
     ];
 }
 
+const isEmailVerified = (OTPEmail) => {
+
+    return User.findOne({
+            where: {
+                [Op.and]: { email: OTPEmail, status: 1 }
+            }
+        }).then((isVerified) => {
+            if(isVerified){
+                return true;
+            }
+            return false;
+        });
+}
+
 
 module.exports = {
     signupValidation,
     loginFormValidator,
     streamFormValidator,
     templateFormValidator,
-    templateUploadFormValidator
+    templateUploadFormValidator,
+    isEmailVerified
 }
 

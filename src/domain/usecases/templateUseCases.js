@@ -9,6 +9,7 @@ const {StatusCodes} = require('http-status-codes');
 const { Op } = require('sequelize');
 
 class TemplatesUseCase {
+
     async createTemplate(authUserJwt, templateData) {
         let transaction;
         try {

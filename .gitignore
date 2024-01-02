@@ -1,6 +1,7 @@
 
 node_modules
 templates/custom/pdf/
+src/interfaces/views
 
 # .env
 .text.txt

@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const useTenantCase = require('../../domain/usecases/tenantUseCases');
+const { sendVerificationEmail } = require('../../infrastructure/external-services/emailService');
 const { StatusCodes } = require('http-status-codes');
 const helper = require('../middlewares/helper');
 const formHelper = require('../middlewares/helper.form');
@@ -85,6 +86,33 @@ class TenantController {
         }
     }
 
+    async resendOTP(req, res){
+        try{
+            const email = req.body.email;
+            if(!email){
+                return res.status(StatusCodes.BAD_REQUEST).json({msg: 'OTP email is not provided'});
+            }
+            const isEmailNotVerified = await formHelper.isEmailVerified(email);
+            if(isEmailNotVerified){
+                return res.status(StatusCodes.BAD_REQUEST).json({msg: 'OTP email is already verified, Please login to your account'});
+            }
+            const response = await useTenantCase.resendOTP(email);
+            if(response === 0){
+                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                    msg: 'There was an error sending an OTP email',
+                    status: StatusCodes.INTERNAL_SERVER_ERROR
+                });
+            }
+            return res.status(StatusCodes.OK).json({
+                msg: 'Email verification token has been sent to your email',
+                status: StatusCodes.OK
+            });
+
+        }catch(error){
+            console.log(error);
+        }
+    }
+
     async loginTenant(req, res){
 
         /*
@@ -107,20 +135,26 @@ class TenantController {
             if(!user){
                 return res.status(StatusCodes.NOT_FOUND).json({msg: "Account not found", status: StatusCodes.NOT_FOUND});
             }
-            const name = user.firstname +' '+ user.lastname;
-            const correctPassword = await bcrypt.compare(loginData.password, user.password);
+
+            
+            const correctPassword = await bcrypt.compare(loginData.password, user.dataValues.password);
 
             if(!correctPassword){
                 return res.status(StatusCodes.UNAUTHORIZED).json({msg: 'Incorrect user credential'});
             }
 
             // Generate token for existing tenant
-            const token = await helper.createJWT(user.id, user.email);
+            const token = await helper.createJWT(user.id, user.dataValues.email);
 
-            return res.status(StatusCodes.OK).json({fullname: name, email: user.email, token: token});
+            const name = user.dataValues.firstname +' '+ user.dataValues.lastname;
+
+            return res.status(StatusCodes.OK).json({
+                fullname: name, 
+                email: user.dataValues.email, 
+                token: token, tenant: user.tenantData});
 
        }catch(error){
-            console.error(error.message)
+            console.error(error)
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Internal Server Error' });
        }
     }

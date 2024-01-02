@@ -2,6 +2,7 @@ const db = require('../models/index');
 const { Role, User } = db;
 const tenantRespository = require('../repositories/tenantRepository');
 const userRespository = require('../repositories/userRepository');
+const { sendVerificationEmail } = require('../../infrastructure/external-services/emailService');
 const helper = require('../../app/middlewares/helper');
 const { Op } = require('sequelize');
 
@@ -43,10 +44,16 @@ class TenantUseCase{
         return response;
     }
 
+    async resendOTP(OTPEmail){
+        const response = await tenantRespository.resendOTP(OTPEmail);
+        return response;
+    }
+
     async loginTenant(loginData){
         // Tenant account login business logic
         const loginEmail = loginData.email;
         const response = await tenantRespository.loginTenant(loginEmail)
+        // console.log(response)
         return response;
     }
 

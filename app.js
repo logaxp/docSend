@@ -1,7 +1,11 @@
 const dotenv = require('dotenv');
 const express = require('express');
+const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path')
+
+dotenv.config()
 
 // const corsOptions = {
 //     origin: 'http://localhost:3000',
@@ -13,16 +17,24 @@ const cors = require('cors');
 // app.use(cors(corsOptions))
 
 
-dotenv.config()
 
 const app = express();
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'src/interfaces/views'));
+
+app.use(cors())
+app.use(express.static('src/interfaces/views/public'));
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json());
 
 // app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.json({ limit: '500mb' }));
 
-app.use(cors())
-app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({extended: true}))
+app.get('/editor', (req, res) => {
+    res.render('editor-ui.ejs');
+});
+
 
 const tenantRoutes = require('./src/app/routes/tenantRoutes');
 const templateRoutes = require('./src/app/routes/templateRoutes');

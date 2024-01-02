@@ -1,5 +1,7 @@
 const { Op } = require('sequelize');
 const db = require('../models/index');
+const helper = require('../../app/middlewares/helper');
+const { sendVerificationEmail } = require('../../infrastructure/external-services/emailService');
 const { Tenant, User } = db;
 
 class TenantRepository{
@@ -23,12 +25,39 @@ class TenantRepository{
         });
     }
 
+    async resendOTP(OTPEmail){
+        try{
+            const user = await User.findOne({
+                where: {
+                    [Op.and]: { email: OTPEmail, status: 0 }
+                }
+            });
+            if(user){
+                const verificationCode = await helper.generateVerificationCode();
+                await sendVerificationEmail(user.email, user.firstname, verificationCode);
+                return await User.update(
+                    { verification_code: verificationCode },
+                    { 
+                        where: { email: OTPEmail, status: 0 }
+                    }
+                );
+            }
+        }catch(error){
+            console.log(error);
+        }
+    }
+
     async loginTenant(loginEmail){
         // check if Tenant email exists.
-        const tenant = await User.findOne({
+        const user = await User.findOne({
             where: { email: loginEmail }
         });
-        return tenant;
+        
+        const tenant = await Tenant.findOne({
+            where: { id: user.tenant_id }
+        });
+        const newTenant = { ...user, tenantData: tenant}
+        return newTenant;
     }
 
     async createTenantStream(streamData, transaction){
