@@ -102,7 +102,7 @@ const templateUploadFormValidator = () =>{
 }
 
 const isEmailVerified = (OTPEmail) => {
-
+    // checks if an email as been verified or not
     return User.findOne({
             where: {
                 [Op.and]: { email: OTPEmail, status: 1 }
