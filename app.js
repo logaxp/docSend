@@ -32,7 +32,7 @@ app.use(bodyParser.json());
 app.use(express.json({ limit: '500mb' }));
 
 app.get('/editor', (req, res) => {
-    res.render('index.ejs');
+    res.render('editor-ui.ejs');
 });
 
 
