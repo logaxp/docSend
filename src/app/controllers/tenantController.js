@@ -4,8 +4,9 @@ const { sendVerificationEmail } = require('../../infrastructure/external-service
 const { StatusCodes } = require('http-status-codes');
 const helper = require('../middlewares/helper');
 const formHelper = require('../middlewares/helper.form');
-const bcrypt = require('bcrypt')
-const dotenv = require('dotenv')
+const bcrypt = require('bcrypt');
+const dotenv = require('dotenv');
+
 dotenv.config();
 
 class TenantController {
@@ -139,7 +140,6 @@ class TenantController {
                 return res.status(StatusCodes.NOT_FOUND).json({msg: "Account not found", status: StatusCodes.NOT_FOUND});
             }
 
-            
             const correctPassword = await bcrypt.compare(loginData.password, user.dataValues.password);
 
             if(!correctPassword){
@@ -147,19 +147,55 @@ class TenantController {
             }
 
             // Generate token for existing tenant
-            const token = await helper.createJWT(user.id, user.dataValues.email);
+            const token = await helper.createJWT(user.dataValues.id, user.dataValues.email);
+
+            // Get logged in user device information
+            const IP_Address = req.ip || req.connection.remoteAddress;
+            const userAgent = req.get('user-agent');
+            const currentTimestampSeconds = Math.floor(Date.now() / 1000);
+
+            const sessionData = { 
+                user_id: user.dataValues.id, 
+                payload: token, 
+                ip_address: IP_Address, 
+                user_agent: userAgent,
+                last_activity: currentTimestampSeconds
+            }
+
+            // save logged in tenant session in the db if not exist 
+            //else fetch logged in tenant session data.
+            const logSession = await useTenantCase.logTenantSession(sessionData);
 
             const name = user.dataValues.firstname +' '+ user.dataValues.lastname;
 
             return res.status(StatusCodes.OK).json({
                 fullname: name, 
-                email: user.dataValues.email, 
-                token: token, tenant: user.tenantData});
+                email: user.dataValues.email,
+                phone_no: user.dataValues.phone_no,
+                tenant: user.tenantData,
+                token: logSession.payload,
+            });
 
        }catch(error){
-            console.error(error)
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Internal Server Error' });
+            console.error(error.errors[0].message)
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ 
+                msg: "You're already logged in",
+                devMsg: error.errors[0].message
+            });
        }
+    }
+
+    async logoutTenant(req, res){
+        try{
+            const authUserJwt = req.user;
+            const destroyTenantSession = await useTenantCase.logoutTenant(authUserJwt.authId);
+            return destroyTenantSession.length > 0 
+            ? res.status(StatusCodes.OK).json({msg: "Tenant logged out successfully", status: StatusCodes.OK}) 
+            : res.status(StatusCodes.OK).json({msg: "Something went wrong when trying to logout Tenant", status: StatusCodes.BAD_REQUEST})
+        }catch(error){
+            console.error(error.message);
+            return;
+        }
     }
 
     async createTenantStream(req, res) {

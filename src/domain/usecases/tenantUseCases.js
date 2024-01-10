@@ -57,6 +57,17 @@ class TenantUseCase{
         return response;
     }
 
+    async logTenantSession(session){
+        // Store logged in tenant session on the db
+        const response = await tenantRespository.logTenantSession(session)
+        return response;
+    }
+
+    async logoutTenant(Id){
+        const response = await tenantRespository.logoutTenant(Id)
+        return response;
+    }
+
     async createTenantStream(authUserJwt, streamData){
         let transaction;
         try{

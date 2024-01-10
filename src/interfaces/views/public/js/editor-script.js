@@ -1,4 +1,5 @@
 const { jsPDF } = window.jspdf;
+import { PDFDocument, rgb } from 'https://cdn.skypack.dev/pdf-lib';
 
 const parentContainer = document.createElement('div');
 parentContainer.classList.add('parent-container');
@@ -56,7 +57,7 @@ let pdfDoc = null;
 let pageNum = 1;
 let pageRendering = false;
 let pageNumPending = null;
-const scale = 1;
+const scale = 1.5;
 const outputScale = window.devicePixelRatio || 1;
 
 const canvas = documentCanvas;
@@ -122,48 +123,47 @@ function queueRenderPage(num) {
 }
 
 
-function loadPDFFromURL() {
-    // const pdfURL = pdfURLField.value.trim();
-    const pdfURL = 'localhost:8000/templates/custom/pdf/software-development-proposal-template-1702352345704.pdf'
+// function loadPDFFromURL() {
+//     // const pdfURL = pdfURLField.value.trim();
+//     const pdfURL = 'localhost:8000/templates/custom/pdf/software-development-proposal-template-1702352345704.pdf'
 
-    if (!pdfURL) {
-        alert('Please enter a valid PDF URL.');
-        return;
-    }
+//     if (!pdfURL) {
+//         alert('Please enter a valid PDF URL.');
+//         return;
+//     }
 
-    pdfjsLib.getDocument(pdfURL)
-        .promise.then(function (pdf) {
-            pdfDoc = pdf;
-            renderPage(pageNum);
-        })
-        .catch(function (error) {
-            console.error('Error loading PDF:', error);
-        });
-}
+//     pdfjsLib.getDocument(pdfURL)
+//         .promise.then(function (pdf) {
+//             pdfDoc = pdf;
+//             renderPage(pageNum);
+//         })
+//         .catch(function (error) {
+//             console.error('Error loading PDF:', error);
+//         });
+// }
 
-loadPDFFromURL();
+// loadPDFFromURL();
 
-// pdfInputField.addEventListener('change', () => {
-//     const file = pdfInputField.files[0];
+pdfInputField.addEventListener('change', () => {
+    const file = pdfInputField.files[0];
 
-//     // const pdfURL = 'localhost:8000/templates/custom/pdf/software-development-proposal-template-1702352345704.pdf'
+    // const pdfURL = 'localhost:8000/templates/custom/pdf/software-development-proposal-template-1702352345704.pdf'
 
-//     const reader = new FileReader();
-//     reader.onload = function () {
-//         const typedArray = new Uint8Array(this.result);
-//         pdfjsLib.getDocument({ data: typedArray })
-//             .promise.then(function (pdf) {
-//                 pdfDoc = pdf;
-//                 renderPage(pageNum);
-//             })
-//             .catch(function (error) {
-//                 console.error('Error loading PDF:', error);
-//             });
-//     };
+    const reader = new FileReader();
+    reader.onload = function () {
+        const typedArray = new Uint8Array(this.result);
+        pdfjsLib.getDocument({ data: typedArray })
+            .promise.then(function (pdf) {
+                pdfDoc = pdf;
+                renderPage(pageNum);
+            })
+            .catch(function (error) {
+                console.error('Error loading PDF:', error);
+            });
+    };
 
-//     reader.readAsArrayBuffer(file);
-//     console.log('Hello from my God..!');
-// });
+    reader.readAsArrayBuffer(file);
+});
 
 addTextButton.addEventListener('click', () => {
     addText();
@@ -202,14 +202,16 @@ function addText(left, top) {
     // textFieldContainer.style.padding='0px';
     textFieldContainer.style.left = '0px';
     textFieldContainer.style.top = '0px';
+    textFieldContainer.style.margin='0px !important';
+    textFieldContainer.style.padding='0px !important';
 
     const resizableDiv = document.createElement('div');
     resizableDiv.classList.add('resizable');
     resizableDiv.style.display = 'inline-block';
     resizableDiv.style.left = '0px';
     resizableDiv.style.top = '0px';
-    resizableDiv.style.margin='0px';
-    resizableDiv.style.padding='0px';
+    resizableDiv.style.margin='0px !important';
+    resizableDiv.style.padding='0px !important';
     resizableDiv.style.width = '150px';
     resizableDiv.style.height = '25px';
     resizableDiv.style.resize = 'both';
@@ -371,8 +373,6 @@ function positionCal(top){
         return top+25;
     }
     return top;
-    
-
 }
 
 

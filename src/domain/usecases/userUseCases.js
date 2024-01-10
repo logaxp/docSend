@@ -3,13 +3,11 @@ const userRespository = require('../repositories/userRepository');
 // const tenantRepository = require('../repositories/tenantRepository');
 
 class UserUseCase {
-  async createUser(userData) {
+  async findStaff(Id) {
     
     try {
 
-      // user business logic
-      const user = await userRespository.create(userData, transaction);
-      return user;
+      return await userRespository.findStaff(Id);
 
     } catch (error) {
       throw new Error(error);

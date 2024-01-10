@@ -244,6 +244,15 @@ async setDocumentNoneCreatorPermission(permissionData){
             return;
         }
     }
+
+    async fetchSingleTenantDocument(tenantData){
+        try{
+            const tenantTemplate = await templatesRepository.singleTenantDocument(tenantData);
+            return tenantTemplate;
+        }catch(error){
+            console.log(error);
+        }
+    }
 }
 
 module.exports = new TemplatesUseCase();

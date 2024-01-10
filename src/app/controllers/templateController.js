@@ -189,10 +189,28 @@ async setDocumentNoneCreatorPermission(req, res){
             const tenantTemplate = await templateUseCase.fitchAllTenantTemplate(authUserJwt);
             return res.status(StatusCodes.OK).json(tenantTemplate);
         }catch(error){
-            console.error(error.message)
+            console.error(error)
         }
 
     }
+
+
+    async fetchSingleTenantDocument(req, res){
+        const documentId = req.params.documentId;
+        const authUserJwt = req.user;
+
+        const tenantData = { 
+            access_token: documentId, user_id: authUserJwt.authId }
+
+        try{
+            const tenantDocument = await templateUseCase.fetchSingleTenantDocument(tenantData)
+            return res.status(StatusCodes.OK).json(tenantDocument)
+        }catch(error){
+            console.log(error);
+        }
+
+    }
+
 
 }
 

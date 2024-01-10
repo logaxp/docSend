@@ -2,7 +2,7 @@ const { Op } = require('sequelize');
 const db = require('../models/index');
 const helper = require('../../app/middlewares/helper');
 const { sendVerificationEmail } = require('../../infrastructure/external-services/emailService');
-const { Tenant, User } = db;
+const { Tenant, User, Session } = db;
 
 class TenantRepository{
 
@@ -56,8 +56,35 @@ class TenantRepository{
         const tenant = await Tenant.findOne({
             where: { id: user.tenant_id }
         });
+
         const newTenant = { ...user, tenantData: tenant}
         return newTenant;
+    }
+
+    async logTenantSession(session){
+        const isSession = await Session.findOne({
+            where: {user_id: session.user_id}
+        });
+        if(!isSession){
+            return await Session.create(session);
+        }
+        return isSession;
+    }
+
+    async logoutTenant(Id){
+        const session = await Session.findOne({
+            where: {user_id: Id}
+        });
+
+        if(!session){
+            return
+        }
+        return await Session.update(
+            {user_id: ''},
+            {
+                where: {user_id: Id}
+            }
+        );
     }
 
     async createTenantStream(streamData, transaction){

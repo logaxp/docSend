@@ -16,5 +16,6 @@ router.post('/template/create', authMiddleware, templateController.createCustomT
 .post('/tenant/document/grant/access', authMiddleware, templateController.setDocumentNoneCreatorPermission)
 .patch('/tenant/document/grant/access', authMiddleware, templateController.updateDocumentNoneCreatorPermission)
 
+.get('/tentant/document/:documentId', authMiddleware, templateController.fetchSingleTenantDocument)
 
 module.exports = router;
