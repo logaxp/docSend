@@ -89,16 +89,13 @@ class TenantController {
 
     async resendOTP(req, res){
         try{
-            const email = req.body.email;
+            const email = req.query.email;
             if(!email){
                 return res.status(StatusCodes.BAD_REQUEST).json({msg: 'OTP email is not provided'});
             }
             const isEmailNotVerified = await formHelper.isEmailVerified(email);
             if(isEmailNotVerified){
-                return res.status(StatusCodes.BAD_REQUEST).json({
-                    msg: 'OTP email is already verified, Please login to your account',
-                    status: StatusCodes.BAD_REQUEST
-                });
+                return res.status(StatusCodes.BAD_REQUEST).json({msg: 'OTP email is already verified, Please login to your account'});
             }
             const response = await useTenantCase.resendOTP(email);
             if(response === 0){

@@ -39,6 +39,7 @@ class TenantUseCase{
     }
 
     async activateTenant(activationCode){
+        console.log(activationCode)
         // Tenant account activation business logic
         const response = await tenantRespository.activateTenant(activationCode)
         return response;
