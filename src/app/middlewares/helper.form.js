@@ -89,10 +89,10 @@ const templateFormValidator = () => {
     ];
 }
 
-const templateUploadFormValidator = () =>{
+const documentUploadFormValidator = () =>{
     return [
         body('name').notEmpty().withMessage('Please enter a Template name'),
-        body('template').custom((value, { req }) => {
+        body('document').custom((value, { req }) => {
             if(!req.file){
                 return Promise.reject('Please select a document template file')
             }
@@ -121,7 +121,7 @@ module.exports = {
     loginFormValidator,
     streamFormValidator,
     templateFormValidator,
-    templateUploadFormValidator,
+    documentUploadFormValidator,
     isEmailVerified
 }
 
