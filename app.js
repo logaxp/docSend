@@ -40,9 +40,13 @@ app.use(requestIp.mw());
 app.use(express.json({ limit: '500mb' }));
 
 
-app.get('/editor', (req, res) => {
-    // res.render('pdf-editor-ui');
-    res.render('editor-ui.ejs');
+app.use('/editor/:documentId', express.static(path.join(__dirname, 'src/interfaces/views/public')));
+app.use('/editor/:documentId', express.static(path.join(__dirname, 'templates/custom/pdf')));
+//C:\Users\TENE\Documents\Node Project\docsend\templates
+app.get('/editor/:documentId', (req, res) => {
+    const { documentId } = req.params;
+
+    res.render('pdf-editor-ui', {documentId});
 });
 
 
