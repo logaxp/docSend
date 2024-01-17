@@ -132,3 +132,42 @@
             //     if (err) return console.log(err);
             //     console.log('PDF saved:', res.filename);
             //     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// COMING FROM  JS FONT-END
+
+            
+        // editableContents.forEach(({ element, x, y }) => {
+        //     const editText = element.innerText;
+        //     const firstPage = pdfDoc.getPages()[0];
+
+        //     // Dynamically set the position based on the editableContent position in points
+        //     const { x: pointsX, y: pointsY } = pixelsToPoints({ x, y });
+
+        //     // Get dynamic color
+        //     const fontColor = setTextColor();
+
+        //     // Get fontSize base on user's choice
+        //     const fontSize =  setFontSize();
+
+        //     firstPage.drawText(`${editText}`, {
+        //     x: pointsX, // x: pointsX - 85.1,
+        //     y: firstPage.getSize().height - pointsY, // Invert Y-axis for correct positioning
+        //     size: fontSize,
+        //     color: rgb(fontColor.red, fontColor.green, fontColor.blue),
+        //     });
+        // });
+
+        // Save the modified PDF

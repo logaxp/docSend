@@ -3,16 +3,92 @@ const { PDFDocument, rgb } = window.PDFLib;
 let pdfBytes;
 const editableContents = [];
 
-async function loadAndDisplayPdf() {
-//   const pdfUrl = 'software-development-proposal-template-1702352345704.pdf';
-    const pdfUrl = 'Nigerian Air Force 2.pdf';
+// Get the current URL path
+async function getDocumentId(){
+    const currentPath = window.location.pathname;
 
-  // Asynchronously download PDF as an ArrayBuffer
-  pdfBytes = await fetch(pdfUrl).then(response => response.arrayBuffer());
+    // Split the path into segments
+    const pathSegments = currentPath.split('/');
 
-  // Load PDF using pdf.js
-  const loadingTask = pdfjsLib.getDocument({ data: pdfBytes });
-  const pdf = await loadingTask.promise;
+    // Access the parameter based on its position in the path
+    const documentId = pathSegments[2]; // Index 2 corresponds to the position of the parameter
+    return documentId;
+}
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoSWQiOjI5LCJlbWFpbCI6ImNvZGVzaG9lbEBnbWFpbC5jb20iLCJpYXQiOjE3MDQ3NDY1ODgsImV4cCI6MTcwNzMzODU4OH0.BwROzzww3osSf-YsCRAbVyQZtT40NfIxsxAOZFkijXs';
+
+async function getDocument(){
+
+    const documentId = await getDocumentId();
+
+    axios({
+        method: 'GET',
+        url: `http://localhost:8000/v1/api/tenant/document/${documentId}`,
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    }).then((response) => {
+        loadAndDisplayPdf(response.data);
+    }).catch((error) => {
+        console.error(error.message);
+    });
+}
+
+getDocument();
+
+
+async function loadPagePreviewer(pdfData){
+    const pdfPreviewerContainer = document.createElement('div');
+
+    const { _pdfInfo } = pdfData;
+
+    for(let pageNum = 1; pageNum <= _pdfInfo.numPages; pageNum++){
+        const page = await pdfData.getPage(pageNum);
+        
+        console.log(page);
+
+        // Get viewport
+        const scale = 1.5;
+        const viewport = page.getViewport({ scale });
+
+        // Prepare canvas
+        const canvas = document.createElement('canvas');
+        canvas.style.width = '150px';
+        canvas.style.height = '200px';
+        canvas.style.padding = '5px';
+        canvas.style.margin = '5px';
+        canvas.style.boxShadow = '0px 0px 8px 0px #ccc';
+        // canvas.style.border = '1px solid #f2f2';
+        const context = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        // Render PDF to canvas
+        await page.render({ canvasContext: context, viewport }).promise;
+
+        pdfPreviewerContainer.appendChild(canvas);
+    }
+
+    const previewerParentDiv = document.getElementById('previewer-parent-div');
+    previewerParentDiv.appendChild(pdfPreviewerContainer);
+}
+
+
+
+
+
+async function loadAndDisplayPdf(pdfDocumentData) {
+    
+    const pdfUrl = pdfDocumentData.path;
+    // Asynchronously download PDF as an ArrayBuffer
+    pdfBytes = await fetch(pdfUrl).then(response => response.arrayBuffer());
+
+    // Load PDF using pdf.js
+    const loadingTask = pdfjsLib.getDocument({ data: pdfBytes });
+    const pdf = await loadingTask.promise;
+
+    // Transport pdf document to previewer
+    await loadPagePreviewer(pdf);
 
   // Render the first page
   const pageNumber = 1;
@@ -40,73 +116,206 @@ async function loadAndDisplayPdf() {
   canvas.addEventListener('dblclick', addEditableContent);
 }
 
-function addEditableContent(event) {
-    // Check if the double-click is on the canvas
-    if (event.target.tagName.toLowerCase() === 'canvas') {
-      // Get coordinates of double-click
-      const x = event.clientX + window.scrollX;
-      const y = event.clientY + window.scrollY;
-  
-      let customFontSize = 14;
-  
-      // Create an editable div
-      const editableContent = document.createElement('div');
-      editableContent.contentEditable = true;
-      editableContent.style.position = 'absolute'; // Keep it as 'absolute'
-      editableContent.style.left = `${x}px`;
-      editableContent.style.top = `${y}px`;
-      editableContent.style.fontSize = `${customFontSize}px`;
-      editableContent.innerText = 'Editable Text';
-  
-      // Append the editable content to the container (same container as the canvas)
-      const canvasContainer = document.getElementById('pdf-container');
-      canvasContainer.appendChild(editableContent);
-  
-      // Save the editable content and its position
-      editableContents.push({ element: editableContent, x, y });
-  
-      // Make the editable content draggable
-      makeDraggable(editableContent);
-  
-      // Focus on the editable content
-      editableContent.focus();
+let fontColor = '#41414'; // Default font color
+const selectTextFontColor = document.getElementById('color-picker');
+selectTextFontColor.addEventListener('input', () => {
+    fontColor = selectTextFontColor.value;
+});
+
+let fontSize = 12;
+const selectFontSizeElement = document.getElementById('font-size-selector');
+selectFontSizeElement.addEventListener('change', () => {
+    fontSize = setFontSize();
+});
+
+// Function for setting font size
+function setFontSize(){
+   const selectedOption = selectFontSizeElement.options[selectFontSizeElement.selectedIndex];
+   const selectedFontSizeValue = selectedOption.value;
+   return Number(selectedFontSizeValue);
+}
+
+
+let selectedEditableContent = null;
+
+// Function to set the selected editable content
+function setSelectedEditableContent(editableObj) {
+    selectedEditableContent = editableObj;
+}
+
+// Function to handle font size changes for the selected editable content
+function handleFontSizeChange(fontSize) {
+    if (selectedEditableContent) {
+        selectedEditableContent.fontSize = fontSize;
+        selectedEditableContent.element.style.fontSize = `${fontSize}px`;
     }
-  }
-  
-  function makeDraggable(element) {
-    let offsetX, offsetY, isDragging = false;
-  
-    // Handle mousedown to start dragging
+}
+
+// Function to handle color changes for the selected editable content
+function handleColorChange(color) {
+    if (selectedEditableContent) {
+        selectedEditableContent.color = color;
+        selectedEditableContent.element.style.color = color;
+    }
+}
+
+async function addEditableContent(event) {
+    if (event.target.tagName.toLowerCase() === 'canvas') {
+        const x = event.clientX + window.scrollX;
+        const y = event.clientY + window.scrollY;
+
+        const editableContent = document.createElement('div');
+        editableContent.contentEditable = true;
+        editableContent.style.position = 'absolute';
+        editableContent.style.left = `${x}px`;
+        editableContent.style.top = `${y}px`;
+        editableContent.style.fontSize = `${fontSize}px`;
+        editableContent.innerText = 'Editable Text';
+
+        const canvasContainer = document.getElementById('pdf-container');
+        canvasContainer.appendChild(editableContent);
+
+        const documentAccessToken = await getDocumentId();
+
+        const editableObj = { 
+            id: generateUniqueId(), 
+            text: editableContent.innerText, 
+            x, 
+            y, 
+            color: fontColor,
+            access_token: documentAccessToken,
+            fontSize: fontSize,
+            element: editableContent  // Keep a reference to the DOM element
+        };
+        editableContents.push(editableObj);
+
+        makeDragResizable(editableContent, editableObj);
+
+        editableContent.addEventListener('input', () => {
+            editableObj.text = editableContent.innerText;
+        });
+
+        canvasContainer.addEventListener('click', () => {
+            editableContent.style.outline = 'none';
+            editableContent.style.border = 'none';
+        });
+
+        editableContent.addEventListener('dblclick', () => {
+            editableContent.style.outline = 'none';
+            editableContent.style.border = '3px solid deepskyblue';
+            setSelectedEditableContent(editableObj);
+            editableContent.focus();
+        });
+
+        selectTextFontColor.addEventListener('input', () => {
+            const newColor = selectTextFontColor.value;
+            handleColorChange(newColor);
+        });
+
+        selectFontSizeElement.addEventListener('change', () => {
+            const newSize = setFontSize();
+            handleFontSizeChange(newSize);
+        });
+    }
+}
+
+
+
+function makeDragResizable(element, editableObj) {
+    let isDragging = false;
+    let isResizing = false;
+    let offsetX, offsetY;
+    let originalWidth, originalHeight;
+
+    const resizers = createResizers(element);
+
+    resizers.forEach((resizer, index) => {
+        resizer.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            isResizing = true;
+            offsetX = e.clientX;
+            offsetY = e.clientY;
+            originalWidth = parseFloat(getComputedStyle(element, null).getPropertyValue('width').replace('px', ''));
+            originalHeight = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
+        });
+    });
+
     element.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      isDragging = true;
-      offsetX = e.clientX - parseFloat(element.style.left);
-      offsetY = e.clientY - parseFloat(element.style.top);
+        e.preventDefault();
+        isDragging = true;
+        offsetX = e.clientX - parseFloat(element.style.left);
+        offsetY = e.clientY - parseFloat(element.style.top);
     });
-  
-    // Handle mousemove to drag the element
-    document.addEventListener('mousemove', (e) => {
-      if (isDragging) {
-        const newX = e.clientX - offsetX;
-        const newY = e.clientY - offsetY;
-  
-        element.style.left = `${newX}px`;
-        element.style.top = `${newY}px`;
-  
-        // Update the editable content position in the array
-        const index = editableContents.findIndex((item) => item.element === element);
-        if (index !== -1) {
-          editableContents[index].x = newX;
-          editableContents[index].y = newY;
-        }
-      }
-    });
-  
-    // Handle mouseup to stop dragging
+
+    document.addEventListener('mousemove', handleDragResize);
     document.addEventListener('mouseup', () => {
-      isDragging = false;
+        isDragging = false;
+        isResizing = false;
     });
-  }
+
+    function handleDragResize(e) {
+        if (isDragging) {
+            const newX = e.clientX - offsetX;
+            const newY = e.clientY - offsetY;
+            element.style.left = `${newX}px`;
+            element.style.top = `${newY}px`;
+
+            updateEditableContentPositionSize(element, editableObj, newX, newY);
+        }
+
+        if (isResizing) {
+            const width = originalWidth + e.clientX - offsetX;
+            const height = originalHeight + e.clientY - offsetY;
+
+            element.style.width = `${width}px`;
+            element.style.height = `${height}px`;
+
+            updateEditableContentPositionSize(element, editableObj, element.style.left, element.style.top, width, height);
+
+            const newFontSize = calculateFontSize(width);
+            element.style.fontSize = `${newFontSize}px`;
+
+            updateEditableContentFontSize(editableObj, newFontSize);
+        }
+    }
+}
+
+// Helper function to create resizable handlers
+function createResizers(element) {
+    const resizers = [];
+    const directions = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+
+    directions.forEach((direction) => {
+        const resizer = document.createElement('div');
+        resizer.classList.add('resizer', direction);
+        element.appendChild(resizer);
+        resizers.push(resizer);
+    });
+
+    return resizers;
+}
+
+// Helper function to update editable content position and size in real-time
+function updateEditableContentPositionSize(element, editableObj, x, y, width, height) {
+    if (editableObj) {
+        editableObj.x = parseFloat(x);
+        editableObj.y = parseFloat(y);
+        editableObj.width = parseFloat(width);
+        editableObj.height = parseFloat(height);
+    }
+}
+
+// Helper function to update editable content font size in real-time
+function updateEditableContentFontSize(editableObj, fontSize) {
+    if (editableObj) {
+        editableObj.fontSize = parseFloat(fontSize);
+    }
+}
+
+function generateUniqueId() {
+    return '_' + Math.random().toString(36).substr(2, 9);
+}
+
 
 
 // Function to convert pixels to points
@@ -118,104 +327,30 @@ function pixelsToPoints(pixels, dpi = 96) {
   return { x: pointsX, y: pointsY };
 }
 
-
-const selectFontSizeElement = document.getElementById('font-size-selector');
-selectFontSizeElement.addEventListener('change', () => {
-    setFontSize();
-});
-
-// Function for setting font size
-function setFontSize(){
-   const selectedOption = selectFontSizeElement.options[selectFontSizeElement.selectedIndex];
-   const selectedFontSizeValue = selectedOption.value;
-   console.log(selectedFontSizeValue);
-   return Number(selectedFontSizeValue);
-}
-
-//  Function to conver hexa color to rgb
-function hexToRgb(hex) {
-    // Remove the hash if present
-    hex = hex.replace(/^#/, '');
-  
-    // Parse the hex value
-    const bigint = parseInt(hex, 16);
-  
-    // Extract the RGB components
-    let r = (bigint >> 16) & 255;
-    let g = (bigint >> 8) & 255;
-    let b = bigint & 255;
-
-    // modify from 0-255 to 0-1
-    const red = Number((r/255).toFixed(1));
-    const green = Number((g/255).toFixed(1));
-    const blue = Number((b/255).toFixed(1));
-  
-    // Return the RGB values as an object
-    return { red, green, blue };
-  }
-
-
-const selectTextFontColor = document.getElementById('color-picker');
-selectTextFontColor.addEventListener('change', () => {
-    setTextColor();
-})
-
-// Function for setting font color
-function setTextColor(){
-    const textColor = selectTextFontColor.value;
-    const rgbColor = hexToRgb(textColor);
-    // console.log(rgbColor);
-    return rgbColor;
-}
-
-
 async function modifyAndDownloadPdf() {
   if (!pdfBytes) {
     console.error('PDF not loaded');
     return;
   }
 
-  // Use pdf-lib to modify the PDF
-  const pdfDoc = await PDFDocument.load(pdfBytes);
-
-  editableContents.forEach(({ element, x, y }) => {
-    const editText = element.innerText;
-    const firstPage = pdfDoc.getPages()[0];
-
-    // Dynamically set the position based on the editableContent position in points
-    const { x: pointsX, y: pointsY } = pixelsToPoints({ x, y });
-
-    // Get dynamic color
-    const fontColor = setTextColor();
-
-    // Get fontSize base on user's choice
-    const fontSize =  setFontSize();
-
-    firstPage.drawText(`${editText}`, {
-      x: pointsX, // x: pointsX - 85.1,
-      y: firstPage.getSize().height - pointsY, // Invert Y-axis for correct positioning
-      size: fontSize,
-      color: rgb(fontColor.red, fontColor.green, fontColor.blue),
+    axios({
+        method: 'patch',
+        url: `http://localhost:8000/v1/api/tenant/document`,
+        data: editableContents,
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    }).then((response) => {
+        loadAndDisplayPdf(response.data);
+    }).catch((error) => {
+        console.error(error.message);
     });
-  });
-
-  // Save the modified PDF
-  const modifiedPdfBytes = await pdfDoc.save();
-
-  // Provide download link for the modified PDF
-  const downloadLink = document.createElement('a');
-  downloadLink.href = URL.createObjectURL(new Blob([modifiedPdfBytes], { type: 'application/pdf' }));
-  downloadLink.download = 'modified-pdf.pdf';
-  downloadLink.click();
+  
 }
 
-const downloadBtn = document.getElementById('modifyAndDownloadPdf');
-const loadPDFBtn = document.getElementById('loadAndDisplayPdf');
-
-downloadBtn.addEventListener('click', () => {
+const saveChanges = document.getElementById('modifyAndDownloadPdf');
+saveChanges.addEventListener('click', () => {
   modifyAndDownloadPdf();
 });
 
-// loadPDFBtn.addEventListener('click', () => {
-  loadAndDisplayPdf();
-// });

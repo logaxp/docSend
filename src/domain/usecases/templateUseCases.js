@@ -45,45 +45,45 @@ class TemplatesUseCase {
         }
     }
 
-    async uploadCustomTemplate(documentData) {
-        let transaction;
-        try {
-          // Initialize the transaction using the correct Sequelize instance (e.g., db.rest)
-          transaction = await db.rest.transaction();
+    // async uploadCustomTemplate(documentData) {
+    //     let transaction;
+    //     try {
+    //       // Initialize the transaction using the correct Sequelize instance (e.g., db.rest)
+    //       transaction = await db.rest.transaction();
       
-          // Pass document metadata to the use case template
-          const document = await templatesRepository.uploadCustomTemplate(documentData, transaction);
+    //       // Pass document metadata to the use case template
+    //       const document = await templatesRepository.uploadCustomTemplate(documentData, transaction);
       
-          // Set document permissions for the creator
-          const permissionDataArray = [
-            {
-              creator_id: documentData.creator_id,
-              user_id: documentData.user_id,
-              document_id: document.id,
-              can_view: 1,
-              can_edit: 1,
-              can_delete: 1,
-              can_share: 1,
-              can_download: 1,
-              created_at: new Date(),
-              updated_at: new Date(),
-            },
-          ];
+    //       // Set document permissions for the creator
+    //       const permissionDataArray = [
+    //         {
+    //           creator_id: documentData.creator_id,
+    //           user_id: documentData.user_id,
+    //           document_id: document.id,
+    //           can_view: 1,
+    //           can_edit: 1,
+    //           can_delete: 1,
+    //           can_share: 1,
+    //           can_download: 1,
+    //           created_at: new Date(),
+    //           updated_at: new Date(),
+    //         },
+    //       ];
       
-          // Pass document permissions to the repository template
-          await templatesRepository.documentNoneCreatorPermission(permissionDataArray, transaction);
+    //       // Pass document permissions to the repository template
+    //       await templatesRepository.documentNoneCreatorPermission(permissionDataArray, transaction);
       
-          // Save doc template data
-          await transaction.commit();
+    //       // Save doc template data
+    //       await transaction.commit();
       
-          return document;
-        } catch (error) {
-          await transaction.rollback();
-          console.error('Error: ', error);
-          await helper.removeUploadedFile(documentData.path, documentData.name);
-          return false;
-        }
-    }
+    //       return document;
+    //     } catch (error) {
+    //       await transaction.rollback();
+    //       console.error('Error: ', error);
+    //       await helper.removeUploadedFile(documentData.path, documentData.name);
+    //       return false;
+    //     }
+    // }
 
     async searchTenantStream(searchData, authUserJwt){
         try{
@@ -111,8 +111,6 @@ class TemplatesUseCase {
     }
     
 /**
- *
- *
  * @param {*
  *  Contains users permission data to be save in the database
  * } permissionData
@@ -121,119 +119,119 @@ class TemplatesUseCase {
  * } 
  * @memberof TemplatesUseCase
  */
-async setDocumentNoneCreatorPermission(permissionData){
+// async setDocumentNoneCreatorPermission(permissionData){
         
-        const models = [
-            { 
-                userModel: User,
-                documentModel: Documents,
-                permissionModel: DocumentPermissions 
-            }
-        ];
+//         const models = [
+//             { 
+//                 userModel: User,
+//                 documentModel: Documents,
+//                 permissionModel: DocumentPermissions 
+//             }
+//         ];
 
-        try{
+//         try{
 
-            // Current user jwt data
-            const authUserJwt = permissionData.user
+//             // Current user jwt data
+//             const authUserJwt = permissionData.user
 
             
-            const creator = await User.findOne({
-                where: { id: authUserJwt.authId }
-            });
+//             const creator = await User.findOne({
+//                 where: { id: authUserJwt.authId }
+//             });
 
-            if(!creator){
-                return;
-            }
+//             if(!creator){
+//                 return;
+//             }
 
-            const requestData = { ...permissionData.body, creator_id: creator.id };
+//             const requestData = { ...permissionData.body, creator_id: creator.id };
 
-            // Check if creator shares tenant relatioship with user
-            if(creator.tenant_id !== requestData.tenant_id){
-                console.error('Tenant relationship miss match, permission creation failed')
-                // return  'Tenant relationship miss match';
-                return false;
-            }
+//             // Check if creator shares tenant relatioship with user
+//             if(creator.tenant_id !== requestData.tenant_id){
+//                 console.error('Tenant relationship miss match, permission creation failed')
+//                 // return  'Tenant relationship miss match';
+//                 return false;
+//             }
 
-            const response = await documentPermissionHelper.validateDocumentPermission([requestData], models);
-            if(!response){
-                false;
-            }
+//             const response = await documentPermissionHelper.validateDocumentPermission([requestData], models);
+//             if(!response){
+//                 false;
+//             }
             
-            const model = DocumentPermissions;
-            const isPermissionSet = await documentPermissionHelper.preventDocumentPermissionDuplicate(requestData, model);
+//             const model = DocumentPermissions;
+//             const isPermissionSet = await documentPermissionHelper.preventDocumentPermissionDuplicate(requestData, model);
             
-            if(isPermissionSet === false){
-                // if user has permission set for document in context return
-                // sendback this message.
-                return 'User already has permission to this document.'
-            }
-            const setPermission = await templatesRepository.documentNoneCreatorPermission([requestData])
-            return setPermission;
+//             if(isPermissionSet === false){
+//                 // if user has permission set for document in context return
+//                 // sendback this message.
+//                 return 'User already has permission to this document.'
+//             }
+//             const setPermission = await templatesRepository.documentNoneCreatorPermission([requestData])
+//             return setPermission;
 
-        }catch(error){
-            console.error(error.message)
-            return;
-        }
-    }
+//         }catch(error){
+//             console.error(error.message)
+//             return;
+//         }
+//     }
 
-    async updateDocumentNoneCreatorPermission(updateData){
+    // async updateDocumentNoneCreatorPermission(updateData){
 
-        const authUserJwt = updateData.user;
-        const _updateData = updateData.body;
+    //     const authUserJwt = updateData.user;
+    //     const _updateData = updateData.body;
 
-        const models = [
-            { 
-                userModel: User,
-                documentModel: Documents,
-                permissionModel: DocumentPermissions 
-            }
-        ];
+    //     const models = [
+    //         { 
+    //             userModel: User,
+    //             documentModel: Documents,
+    //             permissionModel: DocumentPermissions 
+    //         }
+    //     ];
 
-        try{
+    //     try{
             
-            // Check if creator shares tenant relatioship with user
-            const creator = await User.findOne({
-                where: { id: authUserJwt.authId }
-            });
+    //         // Check if creator shares tenant relatioship with user
+    //         const creator = await User.findOne({
+    //             where: { id: authUserJwt.authId }
+    //         });
 
-            if(!creator){
-                console.error('You\'re not the creator of the document')
-                return false;
-            } 
+    //         if(!creator){
+    //             console.error('You\'re not the creator of the document')
+    //             return false;
+    //         } 
 
 
-            const newUpdateDataClone = { ..._updateData, creator_id: creator.id };
+    //         const newUpdateDataClone = { ..._updateData, creator_id: creator.id };
 
-            if(creator.tenant_id !== _updateData.tenant_id){
-                console.error('Tenant relationship miss match, permission update failed')
-                // return  'Tenant relationship miss match';
-                return false;
-            }
+    //         if(creator.tenant_id !== _updateData.tenant_id){
+    //             console.error('Tenant relationship miss match, permission update failed')
+    //             // return  'Tenant relationship miss match';
+    //             return false;
+    //         }
 
-            const response = await documentPermissionHelper.validateDocumentPermission([newUpdateDataClone], models);
-            if(!response){
-                false;
-            }
+    //         const response = await documentPermissionHelper.validateDocumentPermission([newUpdateDataClone], models);
+    //         if(!response){
+    //             false;
+    //         }
 
-            // console.log(newUpdateDataClone)
+    //         // console.log(newUpdateDataClone)
 
-            const model = DocumentPermissions;
-            const isPermissionSet = await documentPermissionHelper.preventDocumentPermissionDuplicate(newUpdateDataClone, model);
+    //         const model = DocumentPermissions;
+    //         const isPermissionSet = await documentPermissionHelper.preventDocumentPermissionDuplicate(newUpdateDataClone, model);
             
-            if(isPermissionSet === true){
-                // if user has permission set for document in context return
-                // sendback this message.
-                return 'Document or User doesn\'t exist.'
-            }
+    //         if(isPermissionSet === true){
+    //             // if user has permission set for document in context return
+    //             // sendback this message.
+    //             return 'Document or User doesn\'t exist.'
+    //         }
 
-            // If pass send payload to templateRepository template
-            const setNewPermission = await templatesRepository.updateNoneDocumentCreatorPermission(newUpdateDataClone)
-            return setNewPermission;
+    //         // If pass send payload to templateRepository template
+    //         const setNewPermission = await templatesRepository.updateNoneDocumentCreatorPermission(newUpdateDataClone)
+    //         return setNewPermission;
 
-        }catch(error){
-            console.error(error)
-        }
-    }
+    //     }catch(error){
+    //         console.error(error)
+    //     }
+    // }
 
     async fitchAllTenantTemplate(tenantData){
         try{
@@ -245,14 +243,14 @@ async setDocumentNoneCreatorPermission(permissionData){
         }
     }
 
-    async fetchSingleTenantDocument(tenantData){
-        try{
-            const tenantTemplate = await templatesRepository.singleTenantDocument(tenantData);
-            return tenantTemplate;
-        }catch(error){
-            console.log(error);
-        }
-    }
+    // async fetchSingleTenantDocument(tenantData){
+    //     try{
+    //         const tenantTemplate = await templatesRepository.singleTenantDocument(tenantData);
+    //         return tenantTemplate;
+    //     }catch(error){
+    //         console.log(error);
+    //     }
+    // }
 }
 
 module.exports = new TemplatesUseCase();

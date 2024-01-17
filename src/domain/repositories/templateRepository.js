@@ -17,12 +17,12 @@ class TemplatesRepository{
         return await Template.create(templateData, transaction);
     }
 
-    async uploadCustomTemplate(documentData, transaction){
-        /*
-        *   Create and return uploaded document instance metadata
-        */
-        return await Documents.create(documentData, transaction);
-    }
+    // async uploadCustomTemplate(documentData, transaction){
+    //     /*
+    //     *   Create and return uploaded document instance metadata
+    //     */
+    //     return await Documents.create(documentData, transaction);
+    // }
 
     async setDocumentCreatorPermission(permissionDataArray, transaction){
         /*
@@ -90,13 +90,13 @@ class TemplatesRepository{
         return await Template.findAll({where: {user_id: id}});
     }
 
-    async singleTenantDocument(tenantData){
-        return await Documents.findOne({
-            where: {
-                user_id: tenantData.user_id, 
-                access_token: tenantData.access_token
-            }});
-    }
+    // async singleTenantDocument(tenantData){
+    //     return await Documents.findOne({
+    //         where: {
+    //             user_id: tenantData.user_id, 
+    //             access_token: tenantData.access_token
+    //         }});
+    // }
 
 }
 
