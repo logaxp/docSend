@@ -45,7 +45,6 @@ app.use('/editor/:documentId', express.static(path.join(__dirname, 'templates/cu
 //C:\Users\TENE\Documents\Node Project\docsend\templates
 app.get('/editor/:documentId', (req, res) => {
     const { documentId } = req.params;
-
     res.render('pdf-editor-ui', {documentId});
 });
 
