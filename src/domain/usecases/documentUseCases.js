@@ -18,6 +18,16 @@ class DocumentUseCases{
         }
     }
 
+    async fetchAllTenantDocument(documentData){
+        try{
+            const tenantDocument = await documentRepository.fetchAllTenantDocument(documentData.authId);
+            return tenantDocument;
+        }catch(error){
+            console.error(error.message)
+            return;
+        }
+    }
+
     async uploadTenantDocument(documentData) {
         let transaction;
         try {

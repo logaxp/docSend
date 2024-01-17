@@ -45,45 +45,45 @@ class TemplatesUseCase {
         }
     }
 
-    // async uploadCustomTemplate(documentData) {
-    //     let transaction;
-    //     try {
-    //       // Initialize the transaction using the correct Sequelize instance (e.g., db.rest)
-    //       transaction = await db.rest.transaction();
+    async uploadCustomTemplate(documentData) {
+        let transaction;
+        try {
+          // Initialize the transaction using the correct Sequelize instance (e.g., db.rest)
+          transaction = await db.rest.transaction();
       
-    //       // Pass document metadata to the use case template
-    //       const document = await templatesRepository.uploadCustomTemplate(documentData, transaction);
+          // Pass document metadata to the use case template
+          const document = await templatesRepository.uploadCustomTemplate(documentData, transaction);
       
-    //       // Set document permissions for the creator
-    //       const permissionDataArray = [
-    //         {
-    //           creator_id: documentData.creator_id,
-    //           user_id: documentData.user_id,
-    //           document_id: document.id,
-    //           can_view: 1,
-    //           can_edit: 1,
-    //           can_delete: 1,
-    //           can_share: 1,
-    //           can_download: 1,
-    //           created_at: new Date(),
-    //           updated_at: new Date(),
-    //         },
-    //       ];
+          // Set document permissions for the creator
+          const permissionDataArray = [
+            {
+              creator_id: documentData.creator_id,
+              user_id: documentData.user_id,
+              document_id: document.id,
+              can_view: 1,
+              can_edit: 1,
+              can_delete: 1,
+              can_share: 1,
+              can_download: 1,
+              created_at: new Date(),
+              updated_at: new Date(),
+            },
+          ];
       
-    //       // Pass document permissions to the repository template
-    //       await templatesRepository.documentNoneCreatorPermission(permissionDataArray, transaction);
+          // Pass document permissions to the repository template
+          await templatesRepository.documentNoneCreatorPermission(permissionDataArray, transaction);
       
-    //       // Save doc template data
-    //       await transaction.commit();
+          // Save doc template data
+          await transaction.commit();
       
-    //       return document;
-    //     } catch (error) {
-    //       await transaction.rollback();
-    //       console.error('Error: ', error);
-    //       await helper.removeUploadedFile(documentData.path, documentData.name);
-    //       return false;
-    //     }
-    // }
+          return document;
+        } catch (error) {
+          await transaction.rollback();
+          console.error('Error: ', error);
+          await helper.removeUploadedFile(documentData.path, documentData.name);
+          return false;
+        }
+    }
 
     async searchTenantStream(searchData, authUserJwt){
         try{

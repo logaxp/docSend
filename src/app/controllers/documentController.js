@@ -91,6 +91,18 @@ class DocumentController{
         }
     }
 
+    async fetchAllTenantDocument(req, res){
+        const authUserJwt = req.user;
+
+        try{
+            const tenantDocument = await documentUseCase.fetchAllTenantDocument(authUserJwt);
+            return res.status(StatusCodes.OK).json(tenantDocument);
+        }catch(error){
+            console.error(error)
+        }
+
+    }
+
 }
 
 module.exports = new DocumentController();

@@ -53,7 +53,7 @@ async function loadPagePreviewer(pdfData){
 
         // Prepare canvas
         const canvas = document.createElement('canvas');
-        canvas.style.width = '150px';
+        canvas.style.width = '125px';
         canvas.style.height = '200px';
         canvas.style.padding = '5px';
         canvas.style.margin = '5px';

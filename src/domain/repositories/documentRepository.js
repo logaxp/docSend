@@ -50,6 +50,14 @@ class DocumentRepository{
           return permissions;
     }
 
+    async fetchAllTenantDocument(id){
+        /*
+        *   Checks and return multiple template instances
+        *   document creator id(user_id) matches the logged in user id
+        */
+        return await Documents.findAll({where: {user_id: id}});
+    }
+
     async update(){
 
     }
