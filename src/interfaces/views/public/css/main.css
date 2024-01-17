@@ -77,3 +77,8 @@
     outline: none;
 }
 
+#previewer-parent-div{
+    width: 100%; 
+    height: auto;
+}
+
