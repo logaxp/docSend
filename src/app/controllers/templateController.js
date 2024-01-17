@@ -1,10 +1,10 @@
-const { validationResult } = require('express-validator');
 const templateUseCase = require('../../domain/usecases/templateUseCases');
-const formHelper = require('../../app/middlewares/helper.form');
 const { StatusCodes } = require('http-status-codes');
 const templateUseCases = require('../../domain/usecases/templateUseCases');
-const helper = require('../../app/middlewares/helper')
-const dotenv = require('dotenv')
+const { validationResult } = require('express-validator');
+const formHelper = require('../../app/middlewares/helper.form');
+const helper = require('../../app/middlewares/helper');
+const dotenv = require('dotenv');
 
 class TemplatesController{
 
@@ -195,26 +195,24 @@ async setDocumentNoneCreatorPermission(req, res){
     }
 
 
-    async fetchSingleTenantDocument(req, res){
-        const documentId = req.params.documentId;
-        const authUserJwt = req.user;
+    // async fetchSingleTenantDocument(req, res){
+    //     const documentId = req.params.documentId;
+    //     const authUserJwt = req.user;
 
-        const tenantData = { 
-            access_token: documentId, user_id: authUserJwt.authId }
+    //     const tenantData = { 
+    //         access_token: documentId, user_id: authUserJwt.authId }
 
-        try{
-            const tenantDocument = await templateUseCase.fetchSingleTenantDocument(tenantData)
-            return res.status(StatusCodes.OK).json(tenantDocument)
-        }catch(error){
-            console.log(error);
-        }
+    //     try{
+    //         const tenantDocument = await templateUseCase.fetchSingleTenantDocument(tenantData)
+    //         return res.status(StatusCodes.OK).json(tenantDocument)
+    //     }catch(error){
+    //         console.log(error);
+    //     }
 
-    }
+    // }
 
 
 }
-
-
 
 module.exports = new TemplatesController();
 

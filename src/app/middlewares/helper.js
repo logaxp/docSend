@@ -81,6 +81,35 @@ module.exports = {
 
         return userFolderPath;
     },
+
+    pixelsToPoints: async (pixels, dpi = 96) => {
+        const inchesX = pixels.x / dpi;
+        const inchesY = pixels.y / dpi;
+        const pointsX = inchesX * (72 / 1.1); // 1 inch = 72 points
+        const pointsY = inchesY * (72 / 1.1); // 1 inch = 72 points
+        return { x: pointsX, y: pointsY };
+    },
+
+    hexToRgb: async (hex) => {
+        // Remove the hash if present
+        hex = hex.replace(/^#/, '');
+      
+        // Parse the hex value
+        const bigint = parseInt(hex, 16);
+      
+        // Extract the RGB components
+        let r = (bigint >> 16) & 255;
+        let g = (bigint >> 8) & 255;
+        let b = bigint & 255;
+    
+        // modify from 0-255 to 0-1
+        const red = Number((r/255).toFixed(1));
+        const green = Number((g/255).toFixed(1));
+        const blue = Number((b/255).toFixed(1));
+      
+        // Return the RGB values as an object
+        return { red, green, blue };
+      }
 }
 
 
