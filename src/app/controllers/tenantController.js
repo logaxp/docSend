@@ -174,6 +174,7 @@ class TenantController {
             });
 
        }catch(error){
+            console.log(error)
             console.error(error.errors[0].message)
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ 
                 msg: "You're already logged in",

@@ -38,11 +38,8 @@ app.use(express.json({ limit: '500mb' }));
 
 
 app.get('/editor', (req, res) => {
-<<<<<<< HEAD
-    res.render('pdf-editor-ui');
-=======
+    // res.render('pdf-editor-ui');
     res.render('editor-ui.ejs');
->>>>>>> 926d72a06d1593b8ee757d67b2621a53c683a2ef
 });
 
 
