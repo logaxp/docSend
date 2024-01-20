@@ -1,4 +1,8 @@
 const { PDFDocument, rgb } = window.PDFLib;
+// const { pdfjsLib } = window.PDFjsLib;
+
+
+// pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.mjs';
 
 let pdfBytes;
 const editableContents = [];
@@ -53,7 +57,7 @@ async function loadPagePreviewer(pdfData){
 
         // Prepare canvas
         const canvas = document.createElement('canvas');
-        canvas.style.width = '125px';
+        canvas.style.width = '130px';
         canvas.style.height = '200px';
         canvas.style.padding = '5px';
         canvas.style.margin = '5px';
@@ -74,12 +78,18 @@ async function loadPagePreviewer(pdfData){
 }
 
 
-
+const canvas = document.createElement('canvas');
+const context = canvas.getContext('2d');
 
 
 async function loadAndDisplayPdf(pdfDocumentData) {
     
     const pdfUrl = pdfDocumentData.path;
+
+    console.log(pdfUrl)
+
+    
+
     // Asynchronously download PDF as an ArrayBuffer
     pdfBytes = await fetch(pdfUrl).then(response => response.arrayBuffer());
 
@@ -94,15 +104,25 @@ async function loadAndDisplayPdf(pdfDocumentData) {
   const pageNumber = 1;
   const page = await pdf.getPage(pageNumber);
 
+  // desired width & height
+  const desiredWidth = 1000;
+  
+  let _viewport = page.getViewport({ scale: 1.5 })
+
   // Get viewport
-  const scale = 1.5;
-  const viewport = page.getViewport({ scale });
+  const scale = desiredWidth / _viewport.width;
+
+  console.log("Scale: ", scale.toFixed(1));
+//   const scale = 1.5
+  const viewport = page.getViewport({ scale: scale.toFixed(1) });
 
   // Prepare canvas
-  const canvas = document.createElement('canvas');
-  const context = canvas.getContext('2d');
+//   const canvas = document.createElement('canvas');
+//   const context = canvas.getContext('2d');
   canvas.width = viewport.width;
   canvas.height = viewport.height;
+
+  console.log('Page height', viewport.height);
 
   // Render PDF to canvas
   await page.render({ canvasContext: context, viewport }).promise;
@@ -164,11 +184,15 @@ async function addEditableContent(event) {
         const x = event.clientX + window.scrollX;
         const y = event.clientY + window.scrollY;
 
+        // console.log('x', x, 'y', y);
+
         const editableContent = document.createElement('div');
         editableContent.contentEditable = true;
         editableContent.style.position = 'absolute';
         editableContent.style.left = `${x}px`;
         editableContent.style.top = `${y}px`;
+        editableContent.style.padding= '0px';
+        editableContent.style.margin='0px';
         editableContent.style.fontSize = `${fontSize}px`;
         editableContent.innerText = 'Editable Text';
 
@@ -180,12 +204,14 @@ async function addEditableContent(event) {
         const editableObj = { 
             id: generateUniqueId(), 
             text: editableContent.innerText, 
-            x, 
-            y, 
+            x: x, 
+            y: y, 
             color: fontColor,
             access_token: documentAccessToken,
             fontSize: fontSize,
-            element: editableContent  // Keep a reference to the DOM element
+            element: editableContent,  // Keep a reference to the DOM element
+            width: canvas.width,
+            height: canvas.height,
         };
         editableContents.push(editableObj);
 
@@ -203,6 +229,8 @@ async function addEditableContent(event) {
         editableContent.addEventListener('dblclick', () => {
             editableContent.style.outline = 'none';
             editableContent.style.border = '3px solid deepskyblue';
+            editableContent.style.padding= '0px';
+            editableContent.style.margin='0px';
             setSelectedEditableContent(editableObj);
             editableContent.focus();
         });
@@ -260,7 +288,9 @@ function makeDragResizable(element, editableObj) {
             element.style.left = `${newX}px`;
             element.style.top = `${newY}px`;
 
-            updateEditableContentPositionSize(element, editableObj, newX, newY);
+            console.log(canvas.width)
+
+            updateEditableContentPositionSize(element, editableObj, newX, newY, canvas.width, canvas.height);
         }
 
         if (isResizing) {
@@ -270,7 +300,7 @@ function makeDragResizable(element, editableObj) {
             element.style.width = `${width}px`;
             element.style.height = `${height}px`;
 
-            updateEditableContentPositionSize(element, editableObj, element.style.left, element.style.top, width, height);
+            updateEditableContentPositionSize(element, editableObj, element.style.left, element.style.top, canvas.width, canvas.height);
 
             const newFontSize = calculateFontSize(width);
             element.style.fontSize = `${newFontSize}px`;
@@ -319,19 +349,21 @@ function generateUniqueId() {
 
 
 // Function to convert pixels to points
-function pixelsToPoints(pixels, dpi = 96) {
-  const inchesX = pixels.x / dpi;
-  const inchesY = pixels.y / dpi;
-  const pointsX = inchesX * (72 / 1.1); // 1 inch = 72 points
-  const pointsY = inchesY * (72 / 1.1); // 1 inch = 72 points
-  return { x: pointsX, y: pointsY };
-}
+// function pixelsToPoints(pixels, dpi = 96) {
+//   const inchesX = pixels.x / dpi;
+//   const inchesY = pixels.y / dpi;
+//   const pointsX = inchesX * (72 / 1.1); // 1 inch = 72 points
+//   const pointsY = inchesY * (72 / 1.1); // 1 inch = 72 points
+//   return { x: pointsX, y: pointsY };
+// }
 
 async function modifyAndDownloadPdf() {
   if (!pdfBytes) {
     console.error('PDF not loaded');
     return;
   }
+
+    console.log(editableContents);
 
     axios({
         method: 'patch',
@@ -342,9 +374,9 @@ async function modifyAndDownloadPdf() {
             'Content-Type': 'application/json'
         }
     }).then((response) => {
-        loadAndDisplayPdf(response.data);
+        return loadAndDisplayPdf(response.data);
     }).catch((error) => {
-        console.error(error.message);
+        return error.message;
     });
   
 }

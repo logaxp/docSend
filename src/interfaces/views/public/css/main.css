@@ -16,6 +16,15 @@
     border-radius: 5px;
 }
 
+.edit-tools{
+    height: 500px; 
+    background-color: #ffff; 
+    width: 140px; 
+    padding: 10px; 
+    margin: 10px;
+    border-radius: 5px;
+}
+
 /* .pdf-container{
     position: relative;
     height: 550px; 
@@ -78,7 +87,8 @@
 }
 
 #previewer-parent-div{
-    width: 100%; 
-    height: auto;
+    width: 100%;
+    height: 500px;
+    margin-bottom: 20px;
 }
 

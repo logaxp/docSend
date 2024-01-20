@@ -205,7 +205,7 @@ class DocumentUseCases{
             tenantData = { user_id: user_id, access_token: data.access_token }
         }
 
-        console.log(tenantData);
+        // console.log(tenantData);
         // Fetch document metadata from the db
         const document = await documentRepository.singleTenantDocument(tenantData)
 
@@ -217,46 +217,44 @@ class DocumentUseCases{
        
         // Iterate over the data structure
         for (const key in requestBody) {
-            const { text, x, y, color, fontSize } = requestBody[key];
+            const { text, x, y, color, fontSize, width: clientSideWidth, height: clientSideHeight } = requestBody[key];
 
-            console.log(text, x, y, color, fontSize)
+            // console.log(text, x, y, color, fontSize)
 
             
             // Check if the item has 'text' property to ensure it's an editable content
             if (text) {
                 const firstPage = pdfDoc.getPages()[0];
+
+                // const { width: docWidth, height: docHeight } = await helper.adjustServerSideDimensions(clientSideWidth, clientSideHeight, firstPage.getSize().width, firstPage.getSize().height)
                 
                 // Dynamically set the position based on the editableContent position in points
                 const { x: pointsX, y: pointsY } = await helper.pixelsToPoints({ x, y });
                 
                 // Get dynamic color
                 const fontColor = await helper.hexToRgb(color);
-                // const fontColor = setTextColor();
 
-                // Get fontSize based on user's choice
-                // const fontSize = setFontSize();
+                // console.log('Page height:', docHeight)
+                
+                firstPage.setLineHeight(0);
+                firstPage.setFontSize(fontSize - 4.3);
+                firstPage.setFontColor(rgb(fontColor.red, fontColor.green, fontColor.blue))
+                
+                
+                const yPosition = firstPage.getSize().height - pointsY;
+                console.log('y', yPosition.toFixed(0));
 
                 firstPage.drawText(`${text}`, {
-                    x: pointsX,
-                    y: firstPage.getSize().height - pointsY, // Invert Y-axis for correct positioning
-                    size:  fontSize, //fontSize,
-                    color: rgb(fontColor.red, fontColor.green, fontColor.blue),
+                    x: pointsX - 10.5,
+                    y: yPosition, // Invert Y-axis for correct positioning
                 });
             }
         }
 
         // Save the modified PDF
         const modifiedPdfBytes = await pdfDoc.save();
-        
-        // const modifiedPdfBytes = await pdfDoc.save();
 
         return await fs.writeFile(`${filePath}/${pdfUrl}`, modifiedPdfBytes);
-
-        // Provide download link for the modified PDF
-        // const downloadLink = document.createElement('a');
-        // downloadLink.href = URL.createObjectURL(new Blob([modifiedPdfBytes], { type: 'application/pdf' }));
-        // downloadLink.download = 'modified-pdf.pdf';
-        // downloadLink.click();
     }
 }
 

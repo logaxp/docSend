@@ -3,6 +3,8 @@ const documentUseCase = require('../../domain/usecases/documentUseCases');
 const { validationResult } = require('express-validator');
 const formHelper = require('../../app/middlewares/helper.form');
 const helper = require('../../app/middlewares/helper');
+const fs = require('fs');
+const path = require('path');
 
 class DocumentController{
 
@@ -11,10 +13,13 @@ class DocumentController{
         const authUserJwt = req.user;
 
         const tenantData = { 
-            access_token: documentId, user_id: authUserJwt.authId }
+            access_token: documentId, 
+            user_id: authUserJwt.authId 
+        }
 
         try{
             const tenantDocument = await documentUseCase.findOne(tenantData)
+            console.log(tenantDocument)
             return res.status(StatusCodes.OK).json(tenantDocument)
         }catch(error){
             console.log(error);
@@ -24,7 +29,6 @@ class DocumentController{
 
     async uploadTenantDocument(req, res){
         // dotenv.config();
-        // const storage = process.env.CUSTOM_PDF_TEMPLATE_STORAGE_LOCATION || '/';
 
         try{
 
@@ -39,7 +43,7 @@ class DocumentController{
             }
 
             const authUserJwt = req.user;
-            const filePath = req.file.filename //req.file.destination + '/' + req.file.filename;
+            const filePath = 'pdf/'+req.file.filename //req.file.destination + '/' + req.file.filename;
             const documentName = req.body.name
             const documentDesc = req.body.description
 
@@ -93,14 +97,12 @@ class DocumentController{
 
     async fetchAllTenantDocument(req, res){
         const authUserJwt = req.user;
-
         try{
             const tenantDocument = await documentUseCase.fetchAllTenantDocument(authUserJwt);
             return res.status(StatusCodes.OK).json(tenantDocument);
         }catch(error){
             console.error(error)
         }
-
     }
 
 }

@@ -82,13 +82,29 @@ module.exports = {
         return userFolderPath;
     },
 
-    pixelsToPoints: async (pixels, dpi = 96) => {
+    pixelsToPoints: async (pixels, scale = 1.1, dpi = 96) => {
+        // Adjust pixels with scale factor
+        // const scaledPixelsX = pixels.x / scale;
+        // const scaledPixelsY = pixels.y / scale;
+      
+        // Convert scaled pixel coordinates to points using DPI values
         const inchesX = pixels.x / dpi;
         const inchesY = pixels.y / dpi;
-        const pointsX = inchesX * (72 / 1.1); // 1 inch = 72 points
-        const pointsY = inchesY * (72 / 1.1); // 1 inch = 72 points
+        const pointsX = inchesX * (72); // 1 inch = 72 points
+        const pointsY = inchesY * (72); // 1 inch = 72 points
+      
         return { x: pointsX, y: pointsY };
-    },
+      },
+
+    // pixelsToPoints: async (pixels, dpi = 96) => {
+    //     const inchesX = pixels.x / dpi;
+    //     const inchesY = pixels.y / dpi;
+    //     const pointsX = inchesX * (72 / 1.1); // 1 inch = 72 points
+    //     const pointsY = inchesY * (72 / 1.1); // 1 inch = 72 points
+    //     return { x: pointsX, y: pointsY };
+    // },
+      
+    
 
     hexToRgb: async (hex) => {
         // Remove the hash if present
@@ -109,7 +125,21 @@ module.exports = {
       
         // Return the RGB values as an object
         return { red, green, blue };
-      }
+      },
+    //   calculateAdjustedPosition: async (clientX, clientY, clientWidth, clientHeight, pdfPage) => {
+    //     const clientViewportHeight = clientHeight;
+    //     const pdfViewportHeight = pdfPage.getSize().height;
+    
+    //     // Calculate the scale factor
+    //     const scaleFactor = clientViewportHeight / pdfViewportHeight;
+    
+    //     // Apply the scale factor to adjust the positions
+    //     const adjustedX = clientX * scaleFactor;
+    //     const adjustedY = clientY * scaleFactor;
+    
+    //     return { x: adjustedX, y: adjustedY };
+    // },
+      
 }
 
 

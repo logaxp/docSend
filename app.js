@@ -8,19 +8,28 @@ const cors = require('cors');
 const path = require('path')
 
 dotenv.config()
-
-// const corsOptions = {
-//     origin: 'http://localhost:3000',
-//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//     credentials: true,
-//     optionsSuccessStatus: 204,
-// };
-
-// app.use(cors(corsOptions))
-
-
-
 const app = express();
+
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions))
+
+
+
+
+
+// Serve static files from the public directory
+// const publicPath = path.join(__dirname, 'public', 'pdf');
+const publicPath = path.join('public', 'pdf');
+app.use('/pdf', express.static(publicPath));
+
+
+
 // app.use(express.static('src/interfaces/views/public'));
 // Set Templating Engine
 // app.use(expressLayouts)
@@ -37,12 +46,11 @@ app.use(bodyParser.raw({ type: 'application/pdf' }));
 app.use(requestIp.mw());
 
 // app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-app.use(express.json({ limit: '500mb' }));
-
+app.use(express.json({ limit: '3mb' }));
 
 app.use('/editor/:documentId', express.static(path.join(__dirname, 'src/interfaces/views/public')));
-app.use('/editor/:documentId', express.static(path.join(__dirname, 'templates/custom/pdf')));
-//C:\Users\TENE\Documents\Node Project\docsend\templates
+app.use('/editor/:documentId', express.static(path.join(__dirname, 'public/pdf')));
+
 app.get('/editor/:documentId', (req, res) => {
     const { documentId } = req.params;
     res.render('pdf-editor-ui', {documentId});

@@ -12,11 +12,13 @@ const {
 class DocumentRepository{
 
     async singleTenantDocument(tenantData){
-        return await Documents.findOne({
+        const documents = await Documents.findOne({
             where: {
                 user_id: tenantData.user_id, 
                 access_token: tenantData.access_token
             }});
+
+        return [documents.dataValues];
     }
 
     async uploadTenantDocument(documentData, transaction){
