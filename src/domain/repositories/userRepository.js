@@ -4,9 +4,12 @@ const { User } = db;
 
 class UserRespository{
 
+    async create(userData, transaction){
+        return await User.create(userData, {transaction})
+    }
+
     async findStaff(Id){
         try{
-            // user creation within the transaction
             const user = await User.findOne({ where: {id: Id} });
             if(!user){
                 return
@@ -23,6 +26,23 @@ class UserRespository{
             throw new Error(error)
         }
     }
+
+    async deleteStaff(staffId) {
+        try {
+            const result = await User.destroy({
+                where: { id: staffId }
+            });
+        
+            if (result === 0) {
+                throw new Error("User not found or not deleted");
+            }
+            return { success: true, msg: "User deleted successfully" };
+        } catch (error) {
+            console.error(error);
+            throw new Error(error);
+        }
+        
+      }
 }
 
 module.exports = new UserRespository();

@@ -19,7 +19,6 @@ class DocumentController{
 
         try{
             const tenantDocument = await documentUseCase.findOne(tenantData)
-            console.log(tenantDocument)
             return res.status(StatusCodes.OK).json(tenantDocument)
         }catch(error){
             console.log(error);
