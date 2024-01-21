@@ -1,7 +1,7 @@
 const { body, matchedData, validationResult } = require('express-validator');
 const db = require('../../domain/models/index');
 const { Op } = require('sequelize');
-const { User, Template } = db;
+const { User, Template, Documents } = db;
 const {upload} = require('../middlewares/helper.file.upload')
 
 
@@ -101,6 +101,23 @@ const documentUploadFormValidator = () =>{
     ];
 }
 
+const documentShareFormValidator = () =>{
+    return [
+        body('receiver_email').notEmpty().withMessage('Please enter reciever email address'),
+        body('access_token').notEmpty().withMessage('Document token is not provided')
+        .custom((value, {req}) => {
+            return Documents.findOne({
+                where: {access_token: req.body.access_token, user_id: req.user.authId},
+                attributes: ["access_token", "access_token"],
+            }).then((document) => {
+                if(!document){
+                    return Promise.reject("No document with provided access token");
+                }
+            });
+        }),
+    ];
+}
+
 const isEmailVerified = (OTPEmail) => {
 
     return User.findOne({
@@ -122,6 +139,7 @@ module.exports = {
     streamFormValidator,
     templateFormValidator,
     documentUploadFormValidator,
-    isEmailVerified
+    isEmailVerified,
+    documentShareFormValidator
 }
 

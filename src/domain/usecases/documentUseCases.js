@@ -9,9 +9,9 @@ const dotenv = require('dotenv');
 
 class DocumentUseCases{
 
-    async findOne(tenantData){
+    async fetchSingleTenantDocument(tenantData){
         try{
-            const tenantTemplate = await documentRepository.singleTenantDocument(tenantData);
+            const tenantTemplate = await documentRepository.fetchSingleTenantDocument(tenantData);
             return tenantTemplate;
         }catch(error){
             console.log(error);
@@ -256,6 +256,24 @@ class DocumentUseCases{
 
         return await fs.writeFile(`${filePath}/${pdfUrl}`, modifiedPdfBytes);
     }
+
+    async searchDocument(userId, keyword){
+        try {
+            return await documentRepository.searchDocument(userId, keyword)
+          } catch (error) {
+            throw new Error(error);
+          }
+    }
+
+    async deleteDocument(userId, documentId){
+        try{
+            return await documentRepository.deleteDocument(userId, documentId)
+        }catch(error){
+            console.error(error)
+            throw new Error('There was an error deleting document');
+        }
+    }
+
 }
 
 module.exports = new DocumentUseCases();

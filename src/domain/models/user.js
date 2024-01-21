@@ -55,6 +55,11 @@ module.exports = (sequelize, DataTypes) => {
         as: 'role',
         foreignKey: 'role_id',
       });
+
+      User.hasMany(models.SharedDocument, {
+        as: 'shared_document',
+        foreignKey: 'sender_id'
+      })
       
     }
 

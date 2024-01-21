@@ -25,7 +25,7 @@ class UserController{
             const keyword = req.query.keyword;
             const adminId = req.user.authId;
 
-            // Returns the data of the record to be deleted.
+            
             const relationship = await relationshipHelper.tenantRelationship(adminId);
             if(!relationship){
                 return res.status(StatusCodes.NOT_FOUND).json({msg: 'Tenant not found'})

@@ -3,6 +3,7 @@ const documentUseCase = require('../../domain/usecases/documentUseCases');
 const { validationResult } = require('express-validator');
 const formHelper = require('../../app/middlewares/helper.form');
 const helper = require('../../app/middlewares/helper');
+const relationshipHelper = require('../middlewares/helper.relationship');
 const fs = require('fs');
 const path = require('path');
 
@@ -18,7 +19,7 @@ class DocumentController{
         }
 
         try{
-            const tenantDocument = await documentUseCase.findOne(tenantData)
+            const tenantDocument = await documentUseCase.fetchSingleTenantDocument(tenantData)
             return res.status(StatusCodes.OK).json(tenantDocument)
         }catch(error){
             console.log(error);
@@ -102,6 +103,28 @@ class DocumentController{
         }catch(error){
             console.error(error)
         }
+    }
+
+    async searchDocument(req, res){
+        try{
+            // Return all document created by user with search keyword
+            const keyword = req.query.keyword;
+            const userId = req.user.authId;
+
+            const response = await documentUseCase.searchDocument(userId, keyword)
+            return res.status(StatusCodes.OK).json(response);
+        }catch(error){
+            console.error(error)
+        }
+    }
+
+    async deleteDocument(req, res){
+        const documentId = req.params.id;
+        const userId = req.user.authId;
+
+        const response = await documentUseCase.deleteDocument(userId, documentId);
+        return res.status(StatusCodes.OK).json(response);
+
     }
 
 }

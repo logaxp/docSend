@@ -15,6 +15,12 @@ module.exports = (sequelize, DataTypes) => {
         as: 'user',
         foreignKey: 'id'
       });
+
+      Tenant.hasMany(models.SharedDocument, {
+        as: 'shared_document',
+        foreignKey: 'tenant_id'
+      });
+
     }
   }
   Tenant.init({
