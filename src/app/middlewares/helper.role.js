@@ -4,12 +4,12 @@ const { User, Role } = db;
 
 module.exports = {
     userRole: async (userId) => {
+        // Returns user and userRole data
         try {
-            console.log(userId)
             const user = await User.findOne({ where: { id: userId } });
             if (user) {
                 const role = await Role.findOne({ where: { id: user.role_id } });
-                return role;
+                return {role: role, user: user};
             } else {
                 return false;
             }

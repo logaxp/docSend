@@ -3,12 +3,6 @@ const { Op } = require("sequelize");
 
 module.exports = {
     basicSearch: async () => {
-        // const keyword = searchData.search_keyword;
-        // const byEmail = searchData.by_email;
-        // const byFirstname = searchData.by_firstname;
-        // const byLastname = searchData.by_lastname;
-        // const byPhone = searchData.by_phone;
-        // const byRole = searchData.by_role;
     },
     advanceTenantStreamSearch: async (queryData, tenantId) => {
         try{

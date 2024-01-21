@@ -13,6 +13,14 @@ class UserUseCase {
     }
   }
 
+  async searchStaff(tenantId, adminId, keyword){
+    try {
+      return await userRespository.searchStaff(tenantId, adminId, keyword);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   async deleteStaff(staffId) {
     try {
       return await userRespository.deleteStaff(staffId);
