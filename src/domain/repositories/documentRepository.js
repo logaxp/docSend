@@ -60,7 +60,11 @@ class DocumentRepository{
         *   Checks and return multiple template instances
         *   document creator id(user_id) matches the logged in user id
         */
-        return await Documents.findAll({where: {user_id: id}});
+        return await Documents.findAll({
+            where: { user_id: id },
+            order: [['createdAt', 'ASC']],
+          });
+          
     }
 
     async searchDocument(userId, keyword){

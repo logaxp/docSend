@@ -3,8 +3,6 @@ const documentUseCase = require('../../domain/usecases/documentUseCases');
 const { validationResult } = require('express-validator');
 const formHelper = require('../../app/middlewares/helper.form');
 const helper = require('../../app/middlewares/helper');
-const relationshipHelper = require('../middlewares/helper.relationship');
-const fs = require('fs');
 const path = require('path');
 
 class DocumentController{

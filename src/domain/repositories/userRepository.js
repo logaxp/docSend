@@ -1,6 +1,6 @@
 const { Op } = require('sequelize');
 const db = require('../models/index');
-const { User } = db;
+const { User, Role } = db;
 
 class UserRespository{
 
@@ -9,22 +9,58 @@ class UserRespository{
     }
 
     async findStaff(Id){
-        try{
-            const user = await User.findOne({ where: {id: Id} });
-            if(!user){
-                return
+        try {
+            const user = await User.findOne({ where: { id: Id } });
+            if (!user) {
+              return; // or return some default value, depending on your use case
             }
-            // Return all saff that share Tenant data except that of the initiator
-            return await User.findAll({ 
-                where: {
-                    tenant_id: user.tenant_id,
-                    [Op.not]: {id: Id}
-                }
+          
+            // Return all staff that share Tenant data except that of the initiator
+            const data = await User.findAll({
+              where: { tenant_id: user.tenant_id, [Op.not]: { id: Id } },
             });
-
-        }catch(error){
-            throw new Error(error)
-        }
+          
+            const result = await Promise.all(
+              data.map(async (_user) => {
+                const {
+                  dataValues: {
+                    id,
+                    firstname,
+                    lastname,
+                    email,
+                    phone_no,
+                    type,
+                    status,
+                    createdAt,
+                    updatedAt,
+                    tenant_id,
+                    role_id,
+                  },
+                } = _user;
+          
+                // Find the role information based on role_id
+                const _role = await Role.findOne({ where: { id: role_id } });
+                return {
+                  id,
+                  firstname,
+                  lastname,
+                  email,
+                  phone_no,
+                  type,
+                  status: status==0?'Unverified':'Verified',
+                  createdAt,
+                  updatedAt,
+                  tenant_id,
+                  role: _role ? _role.role_name : 'Unknown', // Default to 'Unknown' if role not found
+                };
+              })
+            );
+          
+            return result;
+          } catch (error) {
+            throw new Error(error);
+          }
+          
     }
 
     async searchStaff(tenantId, adminId, keyword){
