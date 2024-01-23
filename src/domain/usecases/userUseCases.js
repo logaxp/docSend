@@ -34,7 +34,7 @@ class UserUseCase {
 
         const roleInfo = await Role.findOne({where: {id: staffData.role_id}});
 
-        if(!roleInfo){
+        if(!roleInfo || roleInfo.role_name == 'super admin'){
           return { success: false, msg: 'Role id constraints error', status: 400 }
         }
 

@@ -55,7 +55,6 @@ class UserRespository{
                 };
               })
             );
-          
             return result;
           } catch (error) {
             throw new Error(error);
