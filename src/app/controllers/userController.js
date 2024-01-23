@@ -60,6 +60,37 @@ class UserController{
         }
     }
 
+    async updateStaffRole(req, res){
+        try{
+            const staff = req.query;
+            const adminId = req.user.authId;
+
+            const relationship = await relationshipHelper.tenantRelationship(staff.id);
+
+            const {role: role, user: user} = await roleHelper.userRole(adminId)
+
+            if(role.role_name != 'admin' || role.role_name == 'super admin'){
+                return res.status(StatusCodes.BAD_REQUEST).json({ success: false, msg: 'You have no permission to take this action', status: 400 })
+            }
+
+            if(user.tenant_id != relationship.tenant_id){
+                return res.status(StatusCodes.BAD_REQUEST).json({ success: false, msg: 'Relationship Error (Permission contraint)', status: 400 })
+            }
+            
+            if(relationship.role_id == staff.role_id){
+                return res.status(StatusCodes.BAD_REQUEST).json({ success: false, msg: 'Role already associated with staff', status: 400 })
+            }
+
+            const response = await useUserCase.updateStaffRole(staff);
+            return res.status(StatusCodes.OK).json(response)
+
+        }catch(error){
+            console.error(error)
+        }
+
+
+    }
+
 }
 
 module.exports = new UserController();

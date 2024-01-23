@@ -1,5 +1,5 @@
 const db = require('../models/index');
-const { User } = db;
+const { User, Role } = db;
 const userRespository = require('../repositories/userRepository');
 // const tenantRepository = require('../repositories/tenantRepository');
 
@@ -26,6 +26,22 @@ class UserUseCase {
       return await userRespository.deleteStaff(staffId);
     } catch (error) {
       throw new Error(error);
+    }
+  }
+
+  async updateStaffRole(staffData){
+    try{
+
+        const roleInfo = await Role.findOne({where: {id: staffData.role_id}});
+
+        if(!roleInfo){
+          return { success: false, msg: 'Role id constraints error', status: 400 }
+        }
+
+        const response = await userRespository.updateStaffRole(staffData)
+        return response;
+    }catch(error){
+      console.error(error);
     }
   }
 

@@ -198,7 +198,7 @@ class DocumentUseCases{
         dotenv.config();
 
         console.log(requestBody)
-
+        return
         const filePath = process.env.CUSTOM_PDF_TEMPLATE_STORAGE_LOCATION;
         for(const key in requestBody){
             const data = requestBody[key];
@@ -207,7 +207,7 @@ class DocumentUseCases{
 
         // console.log(tenantData);
         // Fetch document metadata from the db
-        const document = await documentRepository.singleTenantDocument(tenantData)
+        const document = await documentRepository.fetchSingleTenantDocument(tenantData)
 
         const pdfUrl = document.path;
 

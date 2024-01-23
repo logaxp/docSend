@@ -103,6 +103,23 @@ class UserRespository{
         }
         
       }
+
+      async updateStaffRole(staffData){
+        try {
+          const result = await User.update(
+            { role_id: staffData.role_id },
+            { where: { id: staffData.id } }
+          );
+        
+          if (result[0] === 1) {
+            return { success: true, msg: "Staff role updated successfully", status: 200 };
+          }
+        
+          return { success: false, msg: "There was a problem updating staff's role", status: 500 };
+        } catch (error) {
+          console.error(error);
+        }        
+      }
 }
 
 module.exports = new UserRespository();
