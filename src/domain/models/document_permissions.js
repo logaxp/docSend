@@ -11,10 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // DocumentPermissions.belongsTo(models.Documents, {
-      //   as: 'creator',
-      //   foreignKey: 'creator_id'
-      // })
+
     }
   }
   DocumentPermissions.init({

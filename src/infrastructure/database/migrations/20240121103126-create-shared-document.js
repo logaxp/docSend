@@ -33,6 +33,16 @@ module.exports = {
       receiver_email: {
         type: Sequelize.STRING
       },
+      permission: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Permissions',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+        defaultValue: 0
+      },
       state: {
         type: Sequelize.INTEGER,
         defaultValue: 0

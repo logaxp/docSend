@@ -19,7 +19,12 @@ module.exports = (sequelize, DataTypes) => {
       SharedDocument.belongsTo(models.User, {
         as: 'sender',
         foreignKey: 'sender_id'
-      })
+      });
+
+      SharedDocument.hasOne(models.Permissions, {
+        as: 'document_permission',
+        foreignKey: 'permission'
+      });
 
     }
   }
@@ -28,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     access_token: DataTypes.STRING,
     sender_id: DataTypes.INTEGER,
     receiver_email: DataTypes.STRING,
+    permission: DataTypes.INTEGER,
     state: DataTypes.INTEGER,
     status: DataTypes.INTEGER,
   }, {

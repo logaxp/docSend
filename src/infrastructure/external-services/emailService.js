@@ -39,8 +39,8 @@ const sendVerificationEmail = async (recipientEmail, recipientName, generateToke
                 </html>`});
         return true
     }catch(error){
-        console.log(error);
-        return false
+        console.error('Error outbound email OTP task failed:', error.message);
+        return { success: false, msg: 'Inernal Server Error', status: 500 }
     }
 }
 
@@ -69,20 +69,18 @@ const sendPasswordEmail = async (recipientEmail, recipientName, rawPassword) =>{
                 </html>`});
         return true
     }catch(error){
-        console.log(error);
-        return false
+        console.error('Error outbound email password task failed:', error.message);
+        return { success: false, msg: 'Inernal Server Error', status: 500 }
     }
 }
 
 
 const sendShareDocumentEmail = async (recipientEmail, senderName, mailBody, documentLink) =>{
-
-    try{
-
+    try {
         // send mail with defined transport object
         transporter.sendMail({
-            from: `"DocSend" ${process.env.ADMIN_EMAIL_USER}`, // sender address
-            to: recipientEmail, // list of receivers separate with commas.
+            from: `"DocSend" ${process.env.ADMIN_EMAIL_USER}`,
+            to: recipientEmail,
             subject: "Document shared with you: DocSend",
             html: `
                 <html>
@@ -100,12 +98,17 @@ const sendShareDocumentEmail = async (recipientEmail, senderName, mailBody, docu
                             </div>
                         </div>
                     </body>
-                </html>`});
-        return true
-    }catch(error){
-        console.log(error);
-        return false
+                </html>`
+        });
+        return true;
+    } catch (error) {
+        if (error.code === 'EENVELOPE' && error.command === 'API') {
+            throw new Error('No recipients defined. Please provide at least one recipient.');
+        } else {
+            throw new Error(`An unexpected error occurred: ${error.message}`);
+        }
     }
+    
 }
 
 
