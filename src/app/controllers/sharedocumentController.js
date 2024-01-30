@@ -34,6 +34,8 @@ class ShareDocument{
     }
 
     async fetchDocumentStaff(req, res){
+        // Return list of staffs with access to a document
+
         try{
             const query = req.query;
             const authId = req.user.authId;
