@@ -65,6 +65,7 @@ class ShareDocumentUseCase{
     }
 
     async fetchDocumentStaff(authId, query){
+        // Return list of staff with access to a specific document
         try{
             const staff = await User.findOne({where: { id: authId }})
             if(!staff){
@@ -75,6 +76,20 @@ class ShareDocumentUseCase{
         }catch(error){
             console.error('Error getting list of staff with access to document:', error);
             return { success: false, msg: 'Internal Server Error', status: 500 }
+        }
+    }
+
+    async fetchAllSharedDocument(authId){
+        try{
+            const staff = await User.findOne({where: { id: authId }});
+            if(!staff){
+                return { success: false, msg: "ID constraint", status: 500 }
+            }
+
+            const response = await shareDocumentRepository.fetchAllSharedDocument(staff.email);
+            return response;
+        }catch(error){
+            console.error(error)
         }
     }
 

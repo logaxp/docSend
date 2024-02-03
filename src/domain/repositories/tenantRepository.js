@@ -48,17 +48,25 @@ class TenantRepository{
     }
 
     async loginTenant(loginEmail){
-        // check if Tenant email exists.
-        const user = await User.findOne({
-            where: { email: loginEmail }
-        });
-        
-        const tenant = await Tenant.findOne({
-            where: { id: user.tenant_id }
-        });
-
-        const newTenant = { ...user, tenantData: tenant}
-        return newTenant;
+        try{
+            // check if Tenant email exists.
+            const user = await User.findOne({
+                where: { email: loginEmail }
+            });
+    
+            if(user == null){
+                return null;
+            }
+            
+            const tenant = await Tenant.findOne({
+                where: { id: user.tenant_id }
+            });
+    
+            const newTenant = { ...user, tenantData: tenant}
+            return newTenant;
+        }catch(error){
+            console.log(error);
+        }
     }
 
     async logTenantSession(session){

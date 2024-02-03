@@ -30,6 +30,17 @@ class ShareDocument{
 
     async fetchAllSharedDocument(req, res){
         // List document shared to a Tenant or Stream(This should appare in the notification screen)
+
+        try{
+            const authId = req.user.authId;
+
+            const response = await shareDocumentUseCase.fetchAllSharedDocument(authId);
+            return res.status(StatusCodes.OK).json(response);
+
+        }catch(error){
+            console.error('Error getting list of staff shared document:', error);
+            return { success: false, msg: 'Internal Server Error', status: 500 }
+        }
         
     }
 
@@ -47,6 +58,8 @@ class ShareDocument{
             return { success: false, msg: 'Internal Server Error', status: 500 }
         }
     }
+
+    
 }
 
 module.exports = new ShareDocument()

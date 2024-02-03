@@ -119,10 +119,10 @@ class TenantController {
         /*
         * Handles Tenant login authentication.
         */
+       const loginData = req.body;
 
-        const loginData = req.body;
        try{
-
+           
             // Run the form validation middleware
             const validateLoginForm = formHelper.loginFormValidator();
             await Promise.all(validateLoginForm.map(validation => validation.run(req)));
@@ -133,10 +133,11 @@ class TenantController {
                 return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
             }
             const user = await useTenantCase.loginTenant(loginData);
-            if(!user){
+
+            if(user === null){
                 return res.status(StatusCodes.NOT_FOUND).json({msg: "Account not found", status: StatusCodes.NOT_FOUND});
             }
-
+            
             const correctPassword = await bcrypt.compare(loginData.password, user.dataValues.password);
 
             if(!correctPassword){
@@ -174,7 +175,7 @@ class TenantController {
             });
 
        }catch(error){
-            console.log(error)
+            console.log(error.message)
             console.error(error.errors[0].message)
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ 
                 msg: "You're already logged in",
