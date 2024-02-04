@@ -92,7 +92,6 @@ class ShareDocumentUseCase{
             console.error(error)
         }
     }
-
 }
 
 module.exports = new ShareDocumentUseCase()
