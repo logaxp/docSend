@@ -21,9 +21,9 @@ module.exports = (sequelize, DataTypes) => {
     last_activity: DataTypes.DATE
   }, {
     sequelize,
-    modelName: 'Session',
     underscored: true,
-    tableName: 'Sessions'
+    tableName: 'sessions',
+    modelName: 'Session'
   });
   return Session;
 };

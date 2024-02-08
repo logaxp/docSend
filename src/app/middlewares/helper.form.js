@@ -1,7 +1,7 @@
 const { body, matchedData, validationResult } = require('express-validator');
 const db = require('../../domain/models/index');
 const { Op } = require('sequelize');
-const { User, Template, Documents } = db;
+const { User, Template, Documents, Team } = db;
 const {upload} = require('../middlewares/helper.file.upload')
 
 
@@ -132,7 +132,42 @@ const isEmailVerified = (OTPEmail) => {
         });
 }
 
+const validateTeamCreationForm = () => {
+    return [
+        body('name').notEmpty().withMessage('Please enter a Team name')
+        .custom((value, {req}) => {
+            return Team.findOne({
+                where: { creator_id: req.user.authId, name: req.body.name },
+                attributes: ["id", "name"],
+            }).then((team) => {
+                if(team){
+                    return Promise.reject("You already have a Team with provided name, try something else!");
+                }
+            });
+        }),
 
+    ];
+}
+
+const validateTeamMemberEmails = async (data) => {
+    data.shift(); // Remove the first element(in context: team ID)
+    const req = { body: data };
+    const validateEmails = data.map((_, index) =>
+      body(`[${index}].email`)
+        .custom((value) => {
+          if (value && typeof value === 'string' && value.trim() !== '') {
+            return true; // Valid email field
+          }
+          throw new Error(`Staff email is not provided at index ${index+1}`);
+        })
+    );
+  
+    await Promise.all(validateEmails.map(validation => validation(req, {}, () => {})));
+  
+    const errors = validationResult(req).array();
+    return errors.map(error => error.msg);
+  };
+  
 module.exports = {
     signupValidation,
     loginFormValidator,
@@ -140,6 +175,8 @@ module.exports = {
     templateFormValidator,
     documentUploadFormValidator,
     isEmailVerified,
-    documentShareFormValidator
+    documentShareFormValidator,
+    validateTeamCreationForm,
+    validateTeamMemberEmails
 }
 

@@ -62,12 +62,14 @@ const templateRoutes = require('./src/app/routes/templateRoutes');
 const staffRoutes = require('./src/app/routes/userRoutes');
 const documentRoutes = require('./src/app/routes/documentRoutes');
 const permissionRoutes = require('./src/app/routes/permissionRoutes');
+const teamRoutes = require('./src/app/routes/teamRoutes');
 
 app.use('/v1/api', tenantRoutes);
 app.use('/v1/api', templateRoutes);
 app.use('/v1/api', staffRoutes);
 app.use('/v1/api', documentRoutes);
 app.use('/v1/api', permissionRoutes);
+app.use('/v1/api', teamRoutes);
 
 
 

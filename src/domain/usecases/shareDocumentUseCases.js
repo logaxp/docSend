@@ -95,3 +95,4 @@ class ShareDocumentUseCase{
 }
 
 module.exports = new ShareDocumentUseCase()
+

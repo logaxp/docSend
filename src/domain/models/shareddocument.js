@@ -38,6 +38,8 @@ module.exports = (sequelize, DataTypes) => {
     status: DataTypes.INTEGER,
   }, {
     sequelize,
+    underscored: true,
+    tableName: 'shared_documents',
     modelName: 'SharedDocument',
   });
   return SharedDocument;
