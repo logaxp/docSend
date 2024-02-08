@@ -1,6 +1,6 @@
 const teamRepository = require("../repositories/teamRepository");
 const db = require('../models/index');
-const { User, Team, Documents } = db;
+const { User, Team, Documents, TeamDocument } = db;
 
 class TeamUseCase{
     async createTeam(teamData){
@@ -74,7 +74,7 @@ class TeamUseCase{
                 where: { id: data.team_id, creator_id: authId, },
                 attributes: ["id"]
             });
-            console.log('Team: ', team.id)
+
             if(!team){
                 return { success: false, msg: 'Team permission contraints', status: 404 }
             }
@@ -82,14 +82,24 @@ class TeamUseCase{
                 where: { access_token: data.access_token, user_id: user.id, },
                 attributes: ["access_token"]
             });
-            console.log('Document: ', document)
+            
             if(!document){
                 return { success: false, msg: 'Document not fund', status: 404 }
             }
+
+            const teamDocument = await TeamDocument.findOne({
+                where: { access_token: data.access_token, team_id: team.id, },
+                attributes: ["access_token"]
+            });
+            // console.log(teamDocument.id)
+            if(!teamDocument){
+                const response = await teamRepository.addProjectToTeam(data);
+                return response;
+            }
+            return { success: false, msg: 'Document exist in team', status: 400 }
     
-            const response = await teamRepository.addProjectToTeam(data);
-            return response;
             
+
         }catch(error){
             console.error(error);
         }

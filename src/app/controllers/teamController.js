@@ -77,7 +77,7 @@ class TeamController{
         try{
             // pass payload to the the use case object
             const response = await teamUseCase.addProjectToTeam(req.user.authId, req.body);
-            return res.status(StatusCodes.CREATED).json(response);
+            return res.status(StatusCodes.OK).json(response);
         }catch(error){
             console.error(error);
         }

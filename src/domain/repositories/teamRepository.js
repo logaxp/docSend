@@ -76,7 +76,7 @@ class TeamRepository{
     async addProjectToTeam(teamDocumentData){
         try{
             const result = await TeamDocument.create(teamDocumentData);
-            if(result.isNewRecord === false){
+            if(result.isNewRecord == false){
                 return { success: true, msg: "Project added successfully", status: 201 }
             }
             return { success: true, msg: "Project creation process failed", status: 500 }
