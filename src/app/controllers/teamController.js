@@ -2,6 +2,7 @@ const teamUseCase = require('../../domain/usecases/teamUseCases');
 const { validationResult } = require('express-validator');
 const formHelper = require('../middlewares/helper.form');
 const { StatusCodes } = require('http-status-codes');
+const relationshipHelper = require('../middlewares/helper.relationship');
 
 class TeamController{
     async createTeam(req, res){
@@ -80,6 +81,24 @@ class TeamController{
             return res.status(StatusCodes.OK).json(response);
         }catch(error){
             console.error(error);
+        }
+    }
+
+    // SEARCH AND ADD STAFF TO TEAM
+    async searchAndAddStaffToTeam(req, res){
+        try{
+            const keyword = req.query.keyword;
+            const adminId = req.user.authId;
+
+            
+            const relationship = await relationshipHelper.tenantRelationship(adminId);
+            if(!relationship){
+                return res.status(StatusCodes.NOT_FOUND).json({msg: 'Tenant not found'})
+            }
+            const response = await userUseCases.searchAndAddStaffToTeam(relationship.tenant_id, adminId, keyword)
+            return res.status(StatusCodes.OK).json(response);
+        }catch(error){
+            console.error(error)
         }
     }
 

@@ -97,12 +97,19 @@ class TeamUseCase{
                 return response;
             }
             return { success: false, msg: 'Document exist in team', status: 400 }
-    
-            
 
         }catch(error){
             console.error(error);
         }
+    }
+
+    // SEARCH AND ADD STAFF TO TEAM
+    async searchAndAddStaffToTeam(req, res){
+        try {
+            return await userRespository.searchAndAddStaffToTeam(tenantId, adminId, keyword);
+          } catch (error) {
+            throw new Error(error);
+          }
     }
 
 }

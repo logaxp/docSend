@@ -7,5 +7,7 @@ router.post('/tenant/team', authMiddleware, teamController.createTeam)
 router.post('/tenant/team/add', authMiddleware, teamController.addTeamMember)
 router.get('/tenant/team/staff/list', authMiddleware, teamController.getTenantStaffs)
 router.post('/tenant/team/add/project', authMiddleware, teamController.addProjectToTeam)
+.get('/tenant/staff/search', authMiddleware, teamController.searchAndAddStaffToTeam)
+
 
 module.exports = router;

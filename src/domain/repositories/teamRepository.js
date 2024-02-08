@@ -87,6 +87,31 @@ class TeamRepository{
 
     }
 
+    // SEARCH AND ADD STAFF TO TEAM
+    async searchAndAddStaffToTeam(tenantId, adminId, keyword){
+        try {
+            return await User.findAll({
+                where: {
+                  [Op.and]: [
+                    {
+                      [Op.or]: [
+                        { firstname: { [Op.like]: `%${keyword}%` } },
+                        { lastname: { [Op.like]: `%${keyword}%` } },
+                        { email: { [Op.like]: `%${keyword}%` } },
+                        { phone_no: { [Op.like]: `%${keyword}%` } },
+                      ]
+                    },
+                    { tenant_id: tenantId },
+                    { id: { [Op.ne]: adminId } } // Exclude the current user
+                  ]
+                }
+              });
+          } catch (error) {
+            console.error('Error:', error);
+            throw error;
+          }
+    }
+
 }
 
 module.exports = new TeamRepository();
