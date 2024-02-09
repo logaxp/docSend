@@ -27,6 +27,7 @@ const authMiddleware = async (req, res, next) => {
     dotenv.config();
     try {
         const response = Jwt.verify(token, process.env.SECRET_KEY)
+        console.log(response);
         req.user = { authId: response.authId, email: response.email }
         next()
     } catch (err) {

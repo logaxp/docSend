@@ -104,7 +104,8 @@ class TeamRepository{
                     { tenant_id: tenantId },
                     { id: { [Op.ne]: adminId } } // Exclude the current user
                   ]
-                }
+                },
+                attributes: ["id", "firstname", "lastname", "email"]
               });
           } catch (error) {
             console.error('Error:', error);

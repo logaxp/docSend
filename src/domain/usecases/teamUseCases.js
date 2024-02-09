@@ -104,9 +104,9 @@ class TeamUseCase{
     }
 
     // SEARCH AND ADD STAFF TO TEAM
-    async searchAndAddStaffToTeam(req, res){
+    async searchAndAddStaffToTeam(tenantId, adminId, keyword){
         try {
-            return await userRespository.searchAndAddStaffToTeam(tenantId, adminId, keyword);
+            return await teamRepository.searchAndAddStaffToTeam(tenantId, adminId, keyword);
           } catch (error) {
             throw new Error(error);
           }

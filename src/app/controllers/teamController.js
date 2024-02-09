@@ -95,7 +95,7 @@ class TeamController{
             if(!relationship){
                 return res.status(StatusCodes.NOT_FOUND).json({msg: 'Tenant not found'})
             }
-            const response = await userUseCases.searchAndAddStaffToTeam(relationship.tenant_id, adminId, keyword)
+            const response = await teamUseCase.searchAndAddStaffToTeam(relationship.tenant_id, adminId, keyword)
             return res.status(StatusCodes.OK).json(response);
         }catch(error){
             console.error(error)
