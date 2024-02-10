@@ -69,15 +69,15 @@ class TenantRepository{
         }
     }
 
-    async logTenantSession(session){
-        const isSession = await Session.findOne({
-            where: {user_id: session.user_id}
-        });
-        if(!isSession){
-            return await Session.create(session);
-        }
-        return isSession;
-    }
+    // async logTenantSession(session){
+    //     const isSession = await Session.findOne({
+    //         where: {user_id: session.user_id}
+    //     });
+    //     if(!isSession){
+    //         return await Session.create(session);
+    //     }
+    //     return isSession;
+    // }
 
     async logoutTenant(Id){
         const session = await Session.findOne({

@@ -147,22 +147,24 @@ class TenantController {
             // Generate token for existing tenant
             const token = await helper.createJWT(user.dataValues.id, user.dataValues.email);
 
-            // Get logged in user device information
-            const IP_Address = req.ip || req.connection.remoteAddress;
-            const userAgent = req.get('user-agent');
-            const currentTimestampSeconds = Math.floor(Date.now() / 1000);
+            // console.log(token)
 
-            const sessionData = { 
-                user_id: user.dataValues.id, 
-                payload: token, 
-                ip_address: IP_Address, 
-                user_agent: userAgent,
-                last_activity: currentTimestampSeconds
-            }
+            // Get logged in user device information
+            // const IP_Address = req.ip || req.connection.remoteAddress;
+            // const userAgent = req.get('user-agent');
+            // const currentTimestampSeconds = Math.floor(Date.now() / 1000);
+
+            // const sessionData = { 
+            //     user_id: user.dataValues.id, 
+            //     payload: token, 
+            //     ip_address: IP_Address, 
+            //     user_agent: userAgent,
+            //     last_activity: currentTimestampSeconds
+            // }
 
             // save logged in tenant session in the db if not exist 
             //else fetch logged in tenant session data.
-            const logSession = await useTenantCase.logTenantSession(sessionData);
+            // const logSession = await useTenantCase.logTenantSession(sessionData);
 
             const name = user.dataValues.firstname +' '+ user.dataValues.lastname;
 
@@ -171,7 +173,7 @@ class TenantController {
                 email: user.dataValues.email,
                 phone_no: user.dataValues.phone_no,
                 tenant: user.tenantData,
-                token: logSession.payload,
+                token: token,
             });
 
        }catch(error){
