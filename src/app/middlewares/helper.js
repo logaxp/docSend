@@ -17,6 +17,14 @@ module.exports = {
         }
     },
 
+    capitalize: async (str) => {
+        // Use a regular expression to match the first letter of each 
+        // word and convert it to uppercase
+        return str.replace(/\b\w/g, function(char) {
+            return char.toUpperCase();
+        });
+    },
+
     generateVerificationCode: async () => {
         const response = randString.generate({length: 6, charset: ['numeric']});
         return response;
