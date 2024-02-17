@@ -6,7 +6,7 @@ module.exports = {
 
     const date = new Date();
 
-    await queryInterface.bulkInsert('Roles', [
+    await queryInterface.bulkInsert('roles', [
       { role_name: 'super admin', created_at: date, updated_at: date},
       { role_name: 'admin', created_at: date, updated_at: date},
       { role_name: 'staff', created_at: date, updated_at: date},
@@ -20,7 +20,7 @@ module.exports = {
      * Add commands to revert seed here.
      *
      */
-     await queryInterface.bulkDelete('Roles', null, {});
+     await queryInterface.bulkDelete('roles', null, {});
     
   }
 };

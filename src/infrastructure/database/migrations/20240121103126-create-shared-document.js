@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('sharedDocuments', {
+    await queryInterface.createTable('shared_documents', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -61,6 +61,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('sharedDocuments');
+    await queryInterface.dropTable('shared_documents');
   }
 };
