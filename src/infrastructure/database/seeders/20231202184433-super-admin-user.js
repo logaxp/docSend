@@ -19,10 +19,7 @@ module.exports = {
       // console.log(role[0].id);
 
       await queryInterface.sequelize.query(`
-        INSERT INTO user_role
-        (user_id, role_id, created_at, updated_at)
-        VALUE
-        ('${user}', '${role[0].id}', 'NOW()', 'NOW()')
+      INSERT INTO user_role (user_id, role_id, created_at, updated_at) VALUES ('${user}', '${role[0].id}', NOW(), NOW())
       `)
 
       // console.log('User inserted successfully:', user);
