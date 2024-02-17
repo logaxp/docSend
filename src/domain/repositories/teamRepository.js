@@ -12,6 +12,7 @@ class TeamRepository{
 
         try{
             transaction = await db.rest.transaction();
+            
             const response = await Team.create(teamData, { transaction });
             await TeamMember.create({ team_id: response.id, member_id: teamData.creator_id }, { transaction })
             await transaction.commit();

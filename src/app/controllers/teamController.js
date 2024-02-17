@@ -20,16 +20,16 @@ class TeamController{
                 return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
             }
 
-            const teamData = { name: helper.capitalize(req.body.name), creator_id: req.user.authId }
+            const teamName = await helper.capitalize(req.body.name.trim());
+            const teamData = { name: teamName, creator_id: req.user.authId }
             const response = await teamUseCase.createTeam(teamData);
+            
             if(response.isNewRecord === false){
                 return res.status(StatusCodes.CREATED).json({
                     msg: 'Team created successfully'
                 });
             }
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-                msg: 'Team created was not successful'
-            });
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response);
 
         }catch(error){
             console.error(error)

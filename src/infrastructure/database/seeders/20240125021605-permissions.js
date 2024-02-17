@@ -5,18 +5,18 @@ module.exports = {
     await queryInterface.bulkInsert('permissions', [
       {
         name: 'Can edit',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        created_at: new Date(),
+        updated_at: new Date(),
       },
       {
         name: 'Can view',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        created_at: new Date(),
+        updated_at: new Date(),
       },
       {
         name: 'Can comment',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        created_at: new Date(),
+        updated_at: new Date(),
       },
       // Add more records as needed
     ], {});

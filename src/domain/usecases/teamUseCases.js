@@ -18,6 +18,11 @@ class TeamUseCase{
             if(!user){
                 return { success: false, msg: 'ID contraints', status: 400 }
             }
+            
+            // const _team = await Team.findOne({ where: { name: teamData.name, creator_id: user.id }});
+            // if(_team){
+            //     return { success: false, msg: "Team already exist", status: 404 } 
+            // }
 
             const team = { ...teamData, tenant_id: user.tenant_id };
 

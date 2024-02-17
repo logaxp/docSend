@@ -137,7 +137,7 @@ const validateTeamCreationForm = () => {
         body('name').notEmpty().withMessage('Please enter a Team name')
         .custom((value, {req}) => {
             return Team.findOne({
-                where: { creator_id: req.user.authId, name: req.body.name },
+                where: { creator_id: req.user.authId, name: req.body.name.trim() },
                 attributes: ["id", "name"],
             }).then((team) => {
                 if(team){

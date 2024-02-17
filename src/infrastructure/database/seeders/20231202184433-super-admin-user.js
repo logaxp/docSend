@@ -22,7 +22,7 @@ module.exports = {
         INSERT INTO user_role
         (user_id, role_id, created_at, updated_at)
         VALUE
-        ('${user}', '${role[0].id}', 'NOW()', 'NOW()')
+        ('${user}', '${role[0].id}', NOW(), NOW())
       `)
 
       // console.log('User inserted successfully:', user);

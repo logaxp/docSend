@@ -22,6 +22,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Folders',
+    underscored: true,
+    tableName: 'folders'
   });
   return Folders;
 };

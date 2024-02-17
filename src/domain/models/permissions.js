@@ -24,6 +24,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Permissions',
+    underscored: true,
+    tableName: 'permissions'
   });
   return Permissions;
 };

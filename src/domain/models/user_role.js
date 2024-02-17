@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User_role',
     underscored: true,
-    tableName: 'User_roles'
+    tableName: 'user_roles'
   });
   return User_role;
 };
