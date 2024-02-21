@@ -36,6 +36,23 @@ class TeamController{
         }
     }
 
+    async fetchOneTeam(req, res){
+        /*
+        * Return a single team
+        */
+
+        try{
+            const authId = req.user.authId;
+            const teamId = req.query.team_id;
+
+            const response = await teamUseCase.fetchOneTeam(authId, teamId)
+            return res.status(StatusCodes.OK).json(response);
+        }catch(error){
+            console.log(error)
+        }
+
+    }
+
     async fetchTeams(req, res){
         /** 
          * Returns the list of Teams created by a user

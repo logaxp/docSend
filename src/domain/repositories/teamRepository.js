@@ -24,6 +24,25 @@ class TeamRepository{
         }
     }
 
+    async fetchOneTeam(teamId){
+        /*
+        * Return a single team
+        */
+
+        try{
+            const result = await Team.findOne({ 
+                where: { id: teamId }
+            });
+            if(result.length < 1){
+                return { success: false, msg: "Record not found", status: 404 }
+            }
+            return result;
+        }catch(error){
+            console.log(error)
+        }
+
+    }
+
     async fetchTeams(authId){
         try{
             const result = await Team.findAll({ where: { creator_id: authId, delete: 0 } });

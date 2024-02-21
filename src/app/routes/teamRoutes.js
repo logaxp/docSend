@@ -4,6 +4,7 @@ const authMiddleware = require('../middlewares/helper.auth');
 const teamController = require('../controllers/teamController');
 
 router.post('/tenant/team', authMiddleware, teamController.createTeam)
+.get('/tenant/team/single', authMiddleware, teamController.fetchOneTeam)
 .get('/tenant/team/list', authMiddleware, teamController.fetchTeams)
 .patch('/tenant/team/update', authMiddleware, teamController.updateTeam)
 .delete('/tenant/team/del', authMiddleware, teamController.deleteTeam)

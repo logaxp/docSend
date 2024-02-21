@@ -18,11 +18,6 @@ class TeamUseCase{
             if(!user){
                 return { success: false, msg: 'ID contraints', status: 400 }
             }
-            
-            // const _team = await Team.findOne({ where: { name: teamData.name, creator_id: user.id }});
-            // if(_team){
-            //     return { success: false, msg: "Team already exist", status: 404 } 
-            // }
 
             const team = { ...teamData, tenant_id: user.tenant_id };
 
@@ -32,6 +27,38 @@ class TeamUseCase{
        }catch(error){
         console.error(error);
        }
+    }
+
+    async fetchOneTeam(authId, teamId){
+        /*
+        * Return a single team
+        */
+
+        try{
+            const user = await User.findOne({
+                where: {
+                     id: authId
+                } 
+            });
+            if(!user){
+                return { success: false, msg: "ID contraints(Account not found)", status: 404 }
+            }
+            const team = await TeamMember.findOne({
+                where: {
+                    team_id: teamId,
+                    member_id: user.id
+                }
+            });
+            if(!team){
+                return { success: false, msg: "Authorization Error", status: 401 }
+            }
+            const response = await teamRepository.fetchOneTeam(team.team_id);
+            return response;
+        }catch(error){
+            console.log(error)
+            return { success: false, msg: "Internal Server Error", status: 500 }
+        }
+
     }
 
     async fetchTeams(authId){
