@@ -227,7 +227,7 @@ class TeamRepository{
                 const { member_id } = member;
                 const user = await User.findAll({
                     where: { id: member_id },
-                    attributes: ["firstname", "lastname", "email"]
+                    attributes: ["id", "firstname", "lastname", "email"]
                 });
                 return user[0];
             }));
