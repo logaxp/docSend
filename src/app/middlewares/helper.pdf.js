@@ -1,8 +1,5 @@
 const { PDFDocument } = require('pdf-lib');
 
-
-
-
 async function addContent(title, body){
 
     // initialize pdf-lib
